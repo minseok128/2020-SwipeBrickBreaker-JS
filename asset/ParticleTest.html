@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>particles test</title>
+    <style>
+      canvas {
+        outline: auto;
+        outline-color: black;
+      }
+    </style>
+    <script>
+      window.onload = function () {
+        const canvas = document.querySelector("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = innerWidth;
+        canvas.height = innerHeight;
+
+        const mouse = {
+          x: innerWidth / 2,
+          y: innerHeight / 2,
+        };
+
+        const color = ["#2185C5", "#7ECEFD", "#FFF6E5", "#FF7F66"];
+
+        addEventListener("resize", () => {
+          canvas.width = innerWidth;
+          canvas.height = innerHeight;
+        });
+
+        const g = 0.1;
+        const friction = 0.99;
+
+        class Particle {
+          constructor(x, y, r, color, v) {
+            this.x = x;
+            this.y = y;
+            this.r = r;
+            this.color = color;
+            this.v = {
+              x: v.x,
+              y: v.y,
+            };
+            this.opacity = 1;
+          }
+
+          draw() {
+            ctx.save();
+            ctx.globalAlpha = this.opacity;
+            //ctx.beginPath();
+            // ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2, false);
+            ctx.fillStyle = this.color;
+			ctx.fillRect(this.x, this.y, this.r, this.r)
+            // ctx.fill();
+            //ctx.closePath();
+            ctx.restore();
+          }
+
+          update() {
+            this.draw();
+            this.v.x *= friction;
+            this.v.y *= friction;
+            this.v.y += g;
+            this.x += this.v.x;
+            this.y += this.v.y;
+            this.opacity -= 0.01;
+          }
+        }
+
+        addEventListener("click", (e) => {
+          mouse.x = e.clientX;
+          mouse.y = e.clientY;
+          const particleCount = 2000;
+          const power = 50;
+          let radians = (Math.PI * 2) / particleCount;
+
+          for (let i = 0; i < particleCount; i++) {
+            particles.push(
+              new Particle(
+                mouse.x,
+                mouse.y,
+                3,
+                color[Math.round(Math.random() * 5)],
+                {
+                  x: Math.cos(radians * i) * (Math.random() * power),
+                  y: Math.sin(radians * i) * (Math.random() * power),
+                }
+              )
+            );
+          }
+        });
+
+        let particles = new Array();
+
+        function animate() {
+          requestAnimationFrame(animate);
+          //ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+          //ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          particles.forEach((particle, i) => {
+            if (particle.opacity > 0) {
+              particle.update();
+            } else {
+              particles.splice(i, 1);
+            }
+          });
+        }
+
+        animate();
+      };
+    </script>
+  </head>
+  <body>
+    <canvas id="mycanvas" width="1000" height="750"></canvas>
+  </body>
+</html>
