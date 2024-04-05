@@ -801,157 +801,188 @@ class Matrix {
     if (object.id != 2) {
       this.matrix.forEach((o) => {
         if (o.id == 0 && o.xId == object.xId) o.level = 0;
-      })
+      });
     }
   }
 }
 
-// 							  class Game {
-// 								constructor(canvas) {
-// 								  this.state = 0;
-// 								  this.ballsNumber = 0;
-// 								  this.crrScore = 0;
-// 								  this.crrScore = 0;
-// 								  this.name = "";
-// 								  this.bord = localStorage.getItem('bord') ? JSON.parse(this.__JSON.parse(localStorage.getItem('bord'))) : [];
-// 								  this.highScore = this.bord ? this.bord[0].score : 0;
-// 								}
+class Game {
+  constructor(canvas) {
+    this.state = 0;
+    this.ballsNumber = 0;
+    this.crrScore = 0;
+    this.fontSize = 15;
+    this.name = "";
+    this.bord = !localStorage.getItem("bord")
+      ? []
+      : JSON.parse(this.__(JSON.parse(localStorage.getItem("bord"))));
+    this.highScore = this.bord ? this.bord[0].score : 0;
+  }
 
-// 								init(ctx, balls, matrix, canvasWidth, canvasHeight) {
-// 								  ctx.shadowOffsetX = 0;
-// 								  ctx.shadowOffsetY = 0;
-// 								  balls.init(canvasWidth, canvasHeight);
-// 								  matrix.init(this);
-// 								  this.name = "";
-// 								  this.bord = localStorage.getItem('bord') ? JSON.parse(this.__JSON.parse(localStorage.getItem('bord'))) : [];
-// 								  this.highScore = this.bord ? this.bord[0].score : 0;
-// 								}
+  init(ctx, balls, matrix, canvasWidth, canvasHeight) {
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+    this.crrScore = 0;
+    balls.init(canvasWidth, canvasHeight);
+    matrix.init(this);
+    this.name = "";
+    this.bord = localStorage.getItem("bord")
+      ? JSON.parse(this.__(JSON.parse(localStorage.getItem("bord"))))
+      : [];
+    this.highScore = this.bord ? this.bord[0].score : 0;
+  }
 
-// 								drawStartMenu(ctx, canvasWidth, canvasHeight, t) {
-// 								  ctx.font = "100px BM YEONSUNG OTF";
-// 								  ctx.fillStyle = "#fdd700";
-// 								  ctx.textBaseline = "middle";
-// 								  ctx.textAlign = "center";
-// 								  ctx.shadowOffsetX = 2;
-// 								  ctx.shadowOffsetY = 2;
-// 								  ctx.shadowColor = "#834e";
-// 								  ctx.fillText("SWIPE, BREAKER", canvasWidth / 2, canvasHeight / 2 - 170);
-// 								  ctx.fillText("0.1.4", canvasWidth / 2, canvasHeight / 2 - 70);
-// 								  ctx.fillText("press R key to start", canvasWidth / 2, canvasHeight / 2 + 30);
-// 								  ctx.fillStyle = "#000000";
-// 								  let img = new Image();
-// 								  img.src = './asset/SBB.png';
-// 								  ctx.drawImage(img, 0, 0);
-// 								  ctx.font = "100px BM YEONSUNG OTF";
-// 								  ctx.fillStyle = "#fdd700";
-// 								  ctx.textBaseline = "middle";
-// 								  ctx.textAlign = "center";
-// // ctx.shadowOffsetX = 2;
-// // ctx.shadowOffsetY = 2;
-// ctx.shadowColor = "#f384ae";
-// ctx.shadowOffsetX = 1;
-// ctx.shadowOffsetY = 1;
-// ctx.font = "15px BM YEONSUNG OTF";
-// ctx.fillStyle = "#000000";
-// ctx.fillText("Swipe right/down/left to control", canvasWidth / 2, canvasHeight / 2 + 175);
-// ctx.font = "15px BM YEONSUNG OTF";
-// ctx.fillStyle = "#000000";
-// ctx.fillText("Don't let the balls fall", canvasWidth / 2, canvasHeight / 2 + 250);
-// ctx.font = "15px BM YEONSUNG OTF";
-// ctx.fillStyle = "#000000";
-// ctx.fillText("Score as many points as you can!", canvasWidth / 2, canvasHeight / 2 + 275);
-// ctx.font = "15px BM YEONSUNG OTF";
-// ctx.fillStyle = "#000000";
-// ctx.fillText("Developed by ChatGPT", canvasWidth / 2, canvasHeight - 10);
+  drawStartMenu(ctx, canvasWidth, canvasHeight, t) {
+    ctx.font = "100px BM YEONSUNG OTF";
+    const script = [
+      "SWIPE",
+      "BRICK",
+      "BREAKER",
+      "0. 1. 4",
+      "press M key to see manual!",
+      "MADE BY SAUP819",
+    ];
 
-// drawGame(ctx, canvasWidth, canvasHeight, balls) {
-//   ctx.font = "100px BM YEONSUNG OTF";
-//   ctx.fillStyle = "#fdd700";
-//   ctx.lineWidth = 2;
-//   ctx.strokeStyle = "rgba(121, 134, 203, 10)";
-//   ctx.textBaseline = "middle";
-//   ctx.textAlign = "center";
-//   ctx.fillText("Game score: " + balls.ballScore + (balls.ballState == 0 || balls.ballState == 1).length;
-//   ctx.fillText("X " + this.ballsNumber, canvasWidth / 2, canvasHeight / 2 - 20);
-//   ctx.fillStyle = "rgb(50, 177, 108)";
-//   ctx.fillText("+" + balls.addNumber, canvasWidth / 2, canvasHeight / 2 + 40);
-// }
+    ctx.fillStyle = "#000000";
+    let img = new Image();
+    img.src = "./asset/SBB.png";
+    ctx.drawImage(img, 0, 0);
 
-// drawGameOver(ctx, canvasWidth, canvasHeight, t) {
-//   this.name = window.prompt("What's Your Name? (within 10 char)");
-//   if(this.name.length > 10) this.name = "";
-//   if(this.name) this.bord.push({name: this.name, score: this.crrScore});
-//   this.bord.sort((a, b) => b.score - a.score).reverse();
-//   localStorage.setItem('bord', JSON.stringify(this.bord));
-//   // ...
+    ctx.font = "100px BM YEONSUNG OTF";
+    ctx.fillStyle = "#fdd700";
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "center";
 
-//   ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
-//   ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    ctx.shadowColor = "#f384ae";
+    ctx.shadowOffsetX = 1;
+    ctx.shadowOffsetY = 1;
+    ctx.font = "15px BM YEONSUNG OTF";
+    ctx.fillText(script[3], canvasWidth / 2, canvasHeight / 2 + 175);
+    ctx.fontSize += Math.sin(5 / 15) * 0.2;
+    ctx.font = `${this.fontSize}px BM YEONSUNG OTF`;
+    ctx.fillText(script[4], canvasWidth / 2, canvasHeight / 2 + 250);
+    ctx.fillText(script[5], canvasWidth / 2, canvasHeight / 2 + 275);
+    ctx.font = "10px BM YEONSUNG OTF";
+    ctx.fillText(script[6], canvasWidth / 2, canvasHeight - 10);
+  }
 
-//   ctx.shadowOffsetX = 2;
-//   ctx.shadowOffsetY = 2;
-//   ctx.shadowColor = "#f384ae";
-//   ctx.font = "100px BM YEONSUNG OTF";
-//   ctx.fillStyle = "#fdd700";
-//   if(this.highScore() > this.crrScore) {
-//     ctx.fillText("Game Over", canvasWidth / 2, 70);
-//   } else {
-//     ctx.fillText("New Record!", canvasWidth / 2, 70);
-//     this.highScore = this.bord[0].score;
-//   }
+  drawGame(ctx, canvasWidth, canvasHeight, balls) {
+    ctx.font = "100px BM YEONSUNG OTF";
+    ctx.fillStyle = "#fdd700";
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "rgba(121, 134, 203, 10)";
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "center";
+    this.ballsNumber = balls.balls.filter(
+      (ball) => ball.state == 0 || ball.state == 1
+    ).length;
+    ctx.fillText(
+      "x" + this.ballsNumber,
+      canvasWidth / 2,
+      canvasHeight / 2 - 20
+    );
+    ctx.font = "25px BM YEONSUNG OTF";
+    ctx.fillStyle = "rgb(50, 177, 108)";
+    ctx.fillText("+" + balls.addNumber, canvasWidth / 2, canvasHeight / 2 + 40);
+  }
 
-//   ctx.shadowOffsetX = 1;
-//   ctx.shadowOffsetY = 1;
-//   ctx.font = "40px BM YEONSUNG OTF";
-//   ctx.fillText("Your Score: " + this.crrScore, canvasWidth / 2, 135);
+  drawGameOver(ctx, canvasWidth, canvasHeight, t) {
+    if (!this.name) {
+      this.name = window.prompt("What's Your Name? (within 10 char)");
+      if (this.name.length > 10) this.name = "";
+      if (!!this.name)
+        this.bord.push({ name: this.name, score: this.crrScore });
+      this.bord.sort((a, b) => b.score - a.score).reverse();
+      localStorage.setItem(
+        "bord",
+        JSON.stringify(this._________(JSON.stringfy(bord)))
+      );
+    }
 
-//   ctx.shadowOffsetX = 0;
-//   ctx.shadowOffsetY = 0;
-//   ctx.font = "20px BM YEONSUNG OTF";
+    ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-// ctx.fillStyle = "#ff384e";
-// ctx.fillText('RANK', 50, 200);
-// ctx.fillStyle = "#fdd700";
-// ctx.fillText('NAME', 160, 200);
-// ctx.fillStyle= 'rgb(50, 177, 108)';
-// ctx.fillText('SCORE', 270, 200);
-// ctx.fillStyle = "#fdd700";
-// for (let i in this.bord) {
-// 	let size = 25;
-// 	if(i < 15) {
-// 		ctx.fillStyle="#ff384e";
-// 		ctx.fillText(`${+i+ 1}`, 50, 225 + size + i);
-// 		ctx.fillStyle = "#fdd700";
-// 		ctx.font="15px BM YEONSUNG OTF";
-// 		ctx.fillText(`${this. bord [i].name}`, 160, 225 + size * i);
-// 		ctx.fillStyle='rgb(50, 177, 108)';
-// 		ctx.font="20px BM YEONSUNG OTF";
-// 		ctx.fillText(`${this.bord [i].score}`, 270, 225+ size + i);
-// 		ctx.fillStyle = "#fdd700";
-// 		} else if (i < 30) {
-// 		ctx.fillStyle = "#ff384e";
-// 	ctx.fillText(`${+i+ 1}`, 50+ 280, 225+ size (i - 15));
-// 	ctx.fillStyle = "#fdd700";
-// 	ctx.font="15px BM YEONSUNG OTF";
-// 	ctx.fillText(`${this.bord [i].name}`, 160+ 280, 225 + size* (i - 15));
-// 	ctx.fillStyle = rgb(50, 177, 108);
-// 	ctx.font = "20px BM YEONSUNG OTF";
-// 	ctx.fillText(`${this.bord [i].score}`, 270 + 280, 225+ size* (i -15));
-// 	ctx.fillStyle = "#fdd700";
-// 	}
-// }
-// this.fontSize+= Math.sin(t/ 100) * 0.02;
-// ctx.font=`${this.fontSize}px BM YEONSUNG OTF`;
-// ctx.fillText("press R key to restart!", canvasWidth / 2, canvasHeight - 50);
+    ctx.shadowOffsetX = 2;
+    ctx.shadowOffsetY = 2;
+    ctx.shadowColor = "#f384ae";
+    ctx.font = "100px BM YEONSUNG OTF";
+    ctx.fillStyle = "#fdd700";
+    if (this.highScore > this.crrScore) {
+      ctx.fillText("Game Over", canvasWidth / 2, 70);
+    } else {
+      ctx.fillText("New Record!", canvasWidth / 2, 70);
+      this.highScore = this.bord[0].score;
+    }
 
-// drawManual (ctx) {
-// 	ctx.fillStyle = "#000000";
-// 	let img = new Image();
-// 	img.src="./asset/manual.png";
-// 	ctx.drawlmage (img, 0, 0, 600, 800);
-// }
-// }
+    ctx.shadowOffsetX = 1;
+    ctx.shadowOffsetY = 1;
+    ctx.font = "40px BM YEONSUNG OTF";
+    ctx.fillText("Your Score: " + this.crrScore, canvasWidth / 2, 135);
 
-// window.onload = () => {
-// 	new App();
-// }
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+    ctx.font = "20px BM YEONSUNG OTF";
+
+    ctx.fillStyle = "#ff384e";
+    ctx.fillText("RANK", 50, 200);
+    ctx.fillStyle = "#fdd700";
+    ctx.fillText("NAME", 160, 200);
+    ctx.fillStyle = "rgb(50, 177, 108)";
+    ctx.fillText("SCORE", 270, 200);
+    ctx.fillStyle = "#fdd700";
+    for (let i in this.bord) {
+      let size = 25;
+      if (i < 15) {
+        ctx.fillStyle = "#ff384e";
+        ctx.fillText(`${+i + 1}`, 50, 225 + size * i);
+        ctx.fillStyle = "#fdd700";
+        ctx.font = "15px BM YEONSUNG OTF";
+        ctx.fillText(`${this.bord[i].name}`, 160, 225 + size * i);
+        ctx.fillStyle = "rgb(50, 177, 108)";
+        ctx.font = "20px BM YEONSUNG OTF";
+        ctx.fillText(`${this.bord[i].score}`, 270, 225 + size * i);
+        ctx.fillStyle = "#fdd700";
+      } else if (i < 30) {
+        ctx.fillStyle = "#ff384e";
+        ctx.fillText(`${+i + 1}`, 50 + 280, 225 + size(i - 15));
+        ctx.fillStyle = "#fdd700";
+        ctx.font = "15px BM YEONSUNG OTF";
+        ctx.fillText(`${this.bord[i].name}`, 160 + 280, 225 + size * (i - 15));
+        ctx.fillStyle = "rgb(50, 177, 108)";
+        ctx.font = "20px BM YEONSUNG OTF";
+        ctx.fillText(`${this.bord[i].score}`, 270 + 280, 225 + size * (i - 15));
+        ctx.fillStyle = "#fdd700";
+      }
+    }
+    this.fontSize += Math.sin(t / 100) * 0.02;
+    ctx.font = `${this.fontSize}px BM YEONSUNG OTF`;
+    ctx.fillText("press R key to restart!", canvasWidth / 2, canvasHeight - 50);
+  }
+
+  drawManual(ctx) {
+    ctx.fillStyle = "#000000";
+    let img = new Image();
+    img.src = "./asset/manual.png";
+    ctx.drawlmage(img, 0, 0, 600, 800);
+  }
+
+  encodeArray(array) {
+    let encodedArray = new Array();
+    for (let index in array) {
+      encodedArray.push(btoa(`${array[index].charCodeAt()}`));
+    }
+    return encodedArray;
+  }
+
+  decodeString(string) {
+    let decodedString = new String();
+    for (let index in string) {
+      decodedString = decodedString + String.fromCharCode(atob(string[index]));
+    }
+    return decodedString;
+  }
+}
+
+window.onload = () => {
+	new App();
+}
