@@ -681,120 +681,130 @@ class Bonus {
   }
 }
 
-// 						  class Matrix {
-// 							constructor(game) {
-// 							  this.matrix = new Array();
-// 							  this.level = 1;
-// 							  this.randomMatrix = new Array(
-// 								[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4],
-// 								[1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 4, 4, 5, 5],
-// 								[1, 1, 2, 2, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5],
-// 								[1, 2, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5],
-// 								[1, 2, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5]
-// 							  );
-// 							  this.randomArray = new Array();
-// 							  this.randomArray = this.randomMatrix[0];
-// 							  this.stage = 0;
-// 							  this.addNewLine(game);
-// 							}
+class Matrix {
+  constructor(game) {
+    this.matrix = new Array();
+    this.level = 1;
+    this.randomMatrix = new Array(
+      [1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4],
+      [1, 1, 1, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5],
+      [1, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+      [1, 2, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+      [1, 2, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+      [1, 2, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+      [1, 2, 3, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+    );
+    this.randomArray = new Array();
+    this.randomArray = this.randomMatrix[0];
+    this.stage = 0;
+    this.addNewLine(game);
+  }
 
-// 							init(game) {
-// 							  this.matrix = new Array();
-// 							  this.level = 1;
-// 							  //console.log(game);
-// 							  this.addNewLine(game);
-// 							  this.stage = 0;
-// 							}
+  init(game) {
+    this.matrix = new Array();
+    this.level = 1;
+    //console.log(game);
+    this.addNewLine(game);
+    this.stage = 0;
+  }
 
-// 							draw(ctx, game, t, balls) {
-// 							  this.matrix.forEach(object => {
-// 								if(object.id != 1) object.draw(ctx, this.level, t);
-// 								else object.draw(ctx, balls);
-// 							  });
-// 							  game.crrScore = this.level - 1;
-// 							}
+  draw(ctx, game, t, balls) {
+    this.matrix.forEach((object) => {
+      if (object.id != 1) object.draw(ctx, this.level, t);
+      else object.draw(ctx, balls);
+    });
+    game.crrScore = this.level - 1;
+  }
 
-// 							addNewLine(game) {
-// 							  this.matrix = this.matrix.map((object) => {
-// 								object.yId++;
-// 								object.y += 50;
-// 								object.maxY += 50;
-// 								return object;
-// 							  });
-// 							  if(this.level == 11 || this.level == 31 || this.level == 61 || this.level == 101 || this.level == 201 || this.level == 301) {
-// 								this.stage++;
-// 								this.randomArray = this.randomMatrix[this.stage];
-// 								//console.log(this.randomArray);
-// 							  }
+  addNewLine(game) {
+    this.matrix = this.matrix.map((object) => {
+      object.yId++;
+      object.y += 50;
+      object.maxY += 50;
+      return object;
+    });
+    if (
+      this.level == 11 ||
+      this.level == 31 ||
+      this.level == 61 ||
+      this.level == 101 ||
+      this.level == 201 ||
+      this.level == 301
+    ) {
+      this.stage++;
+      this.randomArray = this.randomMatrix[this.stage];
+    }
+    //console.log(this.randomArray);
 
-// 							  let newLineElements = new Array();
-// 							  let j = this.getRandomInt(0, 19);
-// 							  const randomNum = this.randomArray[j] + 1;
-// 							  //console.log(randomNum);
-// 							  let bonusId;
-// 							  let array = new Array(0,1,2,3,4,5);
-// 							  while(array.length > randomNum) {
-// 								array.splice(Math.round(Math.random() * array.length), 1);
-// 							  }
-// 							  //console.log(array);
-// 							  while(!bonusId){
-// 								bonusId = array[this.getRandomInt(0, array.length)];
-// 							  }
-// 							  //console.log(this.level, array);
-// 							  for(let i = 0; i < (randomNum); i++){
-// 								if(array[i] == bonusId) {
-// 								  const bonusBlockId = this.getRandomInt(2, 4);
-// 								  const bonus = new BonusBlock(array[i], this.level, bonusBlockId);
-// 								  this.matrix.push(bonus);
-// 								} else {
-// 								  const bonus = new Bonus(array[i]);
-// 								  this.matrix.push(bonus);
-// 								}
-// 								//console.log(bonus);
-// 							  } else {
-// 								const block = new Block(array[i], this.level);
-// 								//console.log(block);
-// 								this.matrix.push(block);
-// 							  }
-// 							  this.level++;
+    let newLineElements = new Array();
+    let j = this.getRandomInt(0, 19);
+    const randomNum = this.randomArray[j] + 1;
+    //console.log(randomNum);
+    let bonusId;
+    let array = new Array(0, 1, 2, 3, 4, 5);
+    while (array.length > randomNum) {
+      array.splice(Math.round(Math.random() * array.length), 1);
+    }
+    //console.log(array);
+    while (!bonusId) {
+      bonusId = array[this.getRandomInt(0, array.length)];
+    }
+    //console.log(this.level, array);
+    for (let i = 0; i < randomNum; i++) {
+      if (array[i] == bonusId) {
+        if (this.level % 10 == 0) {
+          const bonusBlockId = this.getRandomInt(2, 4);
+          const bonus = new BonusBlock(array[i], this.level, bonusBlockId);
+          this.matrix.push(bonus);
+        } else {
+          const bonus = new Bonus(array[i]);
+          this.matrix.push(bonus);
+        }
+        //console.log(bonus);
+      } else {
+        const block = new Block(array[i], this.level);
+        //console.log(block);
+        this.matrix.push(block);
+      }
+    }
+    this.level++;
 
-// 							  //console.log(this.matrix.some(object => object.level) == -1 && object.yId == -3));
-// 							  this.matrix.forEach((object) => {
-// 								if(object.level == -1 && object.yId == 13) {
-// 								  game.state = 2;
-// 								} else {
-// 								  object.level = -1;
-// 								}
-// 							  });
+    //console.log(this.matrix.some(object => object.level) == -1 && object.yId == -3));
+    this.matrix.forEach((object) => {
+      if (object.level > -1 && object.yId == 13) {
+        if (object.id != 1) game.state = 2;
+        else object.level = -1;
+      }
+    });
+  }
 
-// 							  update() {
-// 								this.matrix = this.matrix.filter((object) => {
-// 								  if(object.level == -1) return object;
-// 								})
-// 							  }
+  update() {
+    this.matrix = this.matrix.filter((object) => {
+      if (object.level >= -1) return object;
+    });
+  }
 
-// 							  getRandomInt(min, max) {
-// 								min = Math.ceil(min);
-// 								max = Math.floor(max);
-// 								return Math.floor(Math.random() * (max - min + 1) + min);
-// 							  }
-// 							  bonusBlockUpdate(object) {
-// 								//console.log(object);
-// 								if(object.id == 3) {
-// 								  this.matrix.forEach(o => {
-// 									if(o.yId == object.yId && o.level == 0) {
-// 									  o.level = -1;
-// 									}
-// 								  });
-// 								}
-// 								if(object.id == 2) {
-// 								  this.matrix.forEach(o => {
-// 									if(o.id == 0 && o.xId == object.xId) {
-// 									  o.level = 0;
-// 									}
-// 								  });
-// 								}
-// 							  }
+  getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+
+  bonusBlockUpdate(object) {
+    //console.log(object);
+    if (object.id != 3) {
+      this.matrix.forEach((o) => {
+        if (o.yId == object.yId) o.level = 0;
+        o.level = -1;
+      });
+    }
+    if (object.id != 2) {
+      this.matrix.forEach((o) => {
+        if (o.id == 0 && o.xId == object.xId) o.level = 0;
+      })
+    }
+  }
+}
 
 // 							  class Game {
 // 								constructor(canvas) {
