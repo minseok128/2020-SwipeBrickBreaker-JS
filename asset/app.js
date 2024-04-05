@@ -574,36 +574,37 @@ class Particle {
   }
 }
 
-// class Aura {
-//   constructor(x, y, blockId) {
-//     this.x = x;
-//     this.y = y;
-//     this.blockId = blockId;
-//     this.opacity = 1;
-//     this.t = 0;
-//   }
+class Aura {
+  constructor(x, y, blockId) {
+    this.x = x;
+    this.y = y;
+    this.blockId = blockId;
+    this.opacity = 1;
+    this.t = 0;
+  }
 
-//   draw(ctx) {
-//     const j = Math.sin(this.opacity) * 20;
-//     // console.log(Math.cos(this.opacity));
-//     if (this.blockId == 3) {
-//       ctx.fillStyle = `rgba(50, 177, 108, ${this.opacity})`;
-//       ctx.fillRect(this.x - this.t, this.y - j, this.t, j * 2);
-//       ctx.fillCircle(this.x, this.y - j, this.t, j * 2);
-//       if (this.blockId == 1) {
-//         ctx.fillStyle = `rgba(50, 177, 108, ${this.opacity})`;
-//         ctx.fillRect(this.x - j, this.y - this.t, j * 2, this.t);
-//         ctx.fillCircle(this.x - j, this.y, j * 2, this.t);
-//       }
-//     }
-//   }
+  draw(ctx) {
+    const j = Math.sin(this.opacity) * 20;
+    // console.log(Math.cos(this.opacity));
+    if (this.blockId != 3) {
+      ctx.fillStyle = `rgba(50, 177, 108, ${this.opacity})`;
+      ctx.fillRect(this.x - this.t, this.y - j, this.t, j * 2);
+      ctx.fillRect(this.x, this.y - j, this.t, j * 2);
+    }
+    if (this.blockId != 2) {
+      ctx.fillStyle = `rgba(50, 177, 108, ${this.opacity})`;
+      ctx.fillRect(this.x - j, this.y - this.t, j * 2, this.t);
+      ctx.fillRect(this.x - j, this.y, j * 2, this.t);
+    }
+  }
 
-//   update(ctx) {
-//     this.opacity -= 0.007;
-//     this.t += 50;
-//     this.draw(ctx);
-//   }
-// }
+  update(ctx) {
+    this.opacity -= 0.007;
+    this.t += 50;
+    this.draw(ctx);
+  }
+}
+
 // class Particles {
 //   constructor(x, y, maxLevel, blockId) {
 //     this.x = x;
