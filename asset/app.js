@@ -649,36 +649,38 @@ class Particles {
   }
 }
 
-// 					  class Bonus {
-// 						constructor(xId) {
-// 						  this.id = 1;
-// 						  this.xId = xId;
-// 						  this.yId = 0;
-// 						  this.x = xId * 100 + 50;
-// 						  this.y = 25;
-// 						  this.radius = 10;
-// 						  this.level = 1;
-// 						  this.maxX = this.x + this.radius;
-// 						  this.maxY = this.y + this.radius;
-// 						  draw(ctx, balls) {
-// 							if(this.level > 0) {
-// 							  ctx.beginPath();
-// 							  ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
-// 							  ctx.fillStyle = "#32b16c";
-// 							  ctx.fill();
-// 							  ctx.closePath();
-// 							  ctx.beginPath();
-// 							  ctx.arc(this.x, this.y, this.radius + 5, 0, 2 * Math.PI);
-// 							  ctx.strokeStyle = "#fdd700";
-// 							  ctx.lineWidth = 2;
-// 							  ctx.stroke();
-// 							  ctx.closePath();
-// 							} else if(this.level == -1) {
-// 							  balls.addNumber++;
-// 							  this.level = -2;
-// 							}
-// 						  }
-// 						}
+class Bonus {
+  constructor(xId) {
+    this.id = 1;
+    this.xId = xId;
+    this.yId = 0;
+    this.x = xId * 100 + 50;
+    this.y = 25;
+    this.radius = 10;
+    this.level = 1;
+    this.maxX = this.x + this.radius;
+    this.maxY = this.y + this.radius;
+  }
+  draw(ctx, balls) {
+    if (this.level > -1) {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+      ctx.fillStyle = "#32b16c";
+      ctx.fill();
+      ctx.closePath();
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius + 5, 0, 2 * Math.PI);
+      ctx.strokeStyle = "#fdd700";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.closePath();
+    } else if (this.level == -1) {
+      balls.addNumber++;
+      this.level = -2;
+    }
+  }
+}
+
 // 						  class Matrix {
 // 							constructor(game) {
 // 							  this.matrix = new Array();
