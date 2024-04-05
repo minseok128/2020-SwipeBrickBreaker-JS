@@ -258,103 +258,113 @@ class Ball {
   }
 }
 
-// 			class Balls {
-// 			  constructor(canvasWidth, canvasHeight) {
-// 				this.x = canvasWidth / 2;
-// 				this.y = canvasHeight - 11;
-// 				this.balls = new Array();
-// 				this.state = 0;
-// 				this.vx = 0;
-// 				this.vy = 0;
-// 				this.speed = 4.5;
-// 				this.id = 0;
-// 				this.radius = 11;
-// 				this.addNewBall(canvasWidth, canvasHeight, 1);
-// 				this.addNumber = 0;
-// 				this.startTime = 0;
-// 			  }
+class Balls {
+  constructor(canvasWidth, canvasHeight) {
+    this.x = canvasWidth / 2;
+    this.y = canvasHeight - 11;
+    this.balls = new Array();
+    this.state = 0;
+    this.vx = 0;
+    this.vy = 0;
+    this.speed = 4.5;
+    this.id = 0;
+    this.radius = 11;
+    this.addNewBall(canvasWidth, canvasHeight, 1);
+    this.addNumber = 0;
+    this.startTime = 0;
+  }
 
-// 			  init(canvasWidth, canvasHeight) {
-// 				this.x = canvasWidth / 2;
-// 				this.y = canvasHeight - 11;
-// 				this.balls = new Array();
-// 				this.state = 0;
-// 				this.vx = 0;
-// 				this.vy = 0;
-// 				this.speed = 3.5;
-// 				this.id = 0;
-// 				this.radius = 11;
-// 				this.addNewBall(canvasWidth, canvasHeight, 1);
-// 				this.addNumber = 0;
-// 				this.startTime = 0;
-// 			  }
-// 			  draw(ctx, canvasWidth, canvasHeight, matrix, game, t) {
-// 				if(this.state == 0) {
-// 				  ctx.fillStyle = '#fdd700';
-// 				  ctx.beginPath();
-// 				  ctx.arc(this.x, this.y, 10, 0, 2 * Math.PI);
-// 				  ctx.fill();
-// 				  ctx.closePath();
-// 				} else if(this.state == 1 || this.state == 2) {
-// 				  this.balls.forEach((ball) => {
-// 					ball.draw(ctx, canvasWidth, canvasHeight, this, matrix, t);
-// 				  });
-// 				}
-// 				if(this.state == 2) {
-// 				  ctx.fillStyle = '#fdd700';
-// 				  ctx.beginPath();
-// 				  ctx.arc(this.x, this.y, 10, 0, 2 * Math.PI);
-// 				  ctx.fill();
-// 				  ctx.closePath();
-// 				}
-// 				if(this.balls.every((ball) => ball.state == 2) && this.state == 2) {
-// 				  this.update();
-// 				  this.addNewLine(game);
-// 				  this.addNewBall(canvasWidth, canvasHeight, this.addNumber);
-// 				}
-// 			  }
+  init(canvasWidth, canvasHeight) {
+    this.x = canvasWidth / 2;
+    this.y = canvasHeight - 11;
+    this.balls = new Array();
+    this.state = 0;
+    this.vx = 0;
+    this.vy = 0;
+    this.speed = 3.5;
+    this.id = 0;
+    this.radius = 11;
+    this.addNewBall(canvasWidth, canvasHeight, 1);
+    this.addNumber = 0;
+    this.startTime = 0;
+  }
+  draw(ctx, canvasWidth, canvasHeight, matrix, game, t) {
+    if (this.state == 0) {
+      ctx.fillStyle = "#fdd700";
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, 10, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.closePath();
+    } else if (this.state == 1 || this.state == 2) {
+      this.balls.forEach((ball) => {
+        ball.draw(ctx, canvasWidth, canvasHeight, this, matrix, t);
+      });
+    }
+    if (this.state == 2) {
+      ctx.fillStyle = "#fdd700";
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, 10, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.closePath();
+    }
+    if (this.balls.every((ball) => ball.state == 2) && this.state == 2) {
+      this.update();
+      this.addNewLine(game);
+      this.addNewBall(canvasWidth, canvasHeight, this.addNumber);
+    }
+  }
 
-// 			  setTarget(offsetX, offsetY, t) {
-// 				const delta = Math.round((offsetX - this.x) * 1000) / 1000;
-// 				const deltaY = Math.round((offsetY - this.y - this.radius) * 1000) / 1000;
-// 				let vx = 0;
-// 				let vy = 0;
-// 				const theta = Math.atan2(deltaY, delta);
-// 				//console.log(theta);
-// 				if(theta >= -Math.PI/2 && theta < 0) {
-// 				  vx = Math.round(this.speed * 10 * Math.cos(theta)) / 10;
-// 				  vy = Math.abs(Math.round(this.speed * 10 * Math.sin(theta)) / 10) * -1;
-// 				} else if(theta >= 2.96) {
-// 				  vx = Math.abs(Math.round(this.speed * 10 * Math.cos(2.96)) / 10);
-// 				  vy = Math.abs(Math.round(this.speed * 10 * Math.sin(2.96)) / 10) * -1;
-// 				} else {
-// 				  vx = Math.abs(Math.round(this.speed * 100 * Math.cos(theta)) / 100);
-// 				  vy = Math.abs(Math.round(this.speed * 100 * Math.sin(theta)) / 100) * -1;
-// 				}
-// 				this.startTime = t;
-// 				//console.log(t);
-// 				this.balls.forEach((ball) => {
-// 				  ball.vx = vx;
-// 				  ball.vy = vy;
-// 				});
-// 			  }
+  setTarget(offsetX, offsetY, t) {
+    const delta = Math.round((offsetX - this.x) * 1000) / 1000;
+    const deltaY = Math.round((offsetY - this.y - this.radius) * 1000) / 1000;
+    let vx = 0;
+    let vy = 0;
+    const theta = Math.atan2(deltaY, delta);
+    //console.log(theta);
+    if (theta >= -Math.PI / 2 && theta < 0) {
+      vx = Math.round(this.speed * 10 * Math.cos(theta)) / 10;
+      vy = Math.abs(Math.round(this.speed * 10 * Math.sin(theta)) / 10) * -1;
+    } else if (theta >= 2.96) {
+      vx = Math.abs(Math.round(this.speed * 10 * Math.cos(2.96)) / 10);
+      vy = Math.abs(Math.round(this.speed * 10 * Math.sin(2.96)) / 10) * -1;
+    } else {
+      vx = Math.abs(Math.round(this.speed * 100 * Math.cos(theta)) / 100);
+      vy = Math.abs(Math.round(this.speed * 100 * Math.sin(theta)) / 100) * -1;
+    }
+    this.startTime = t;
+    //console.log(t);
+    this.balls.forEach((ball) => {
+      ball.vx = vx;
+      ball.vy = vy;
+    });
+  }
 
-// 			  update() {
-// 				//this.startTime = 0;
-// 				this.balls.forEach((ball) => {
-// 				  ball.state = 0;
-// 				  ball.x = this.x;
-// 				  ball.y = this.y;
-// 				})
-// 			  }
+  update() {
+    //this.startTime = 0;
+    this.balls.forEach((ball) => {
+      ball.state = 0;
+      ball.x = this.x;
+      ball.y = this.y;
+    });
+  }
 
-// 			  addNewBall(canvasWidth, canvasHeight, addNumber) {
-// 				for(let i = 0; i < addNumber; i++) {
-// 				  const ball = new Ball(canvasWidth, canvasHeight, this.x, this.y, this.speed, this.radius, this.id);
-// 				  this.balls.push(ball);
-// 				  this.id++;
-// 				  this.addNumber = 0;
-// 				  }
+  addNewBall(canvasWidth, canvasHeight, addNumber) {
+    for (let i = 0; i < addNumber; i++) {
+      const ball = new Ball(
+        canvasWidth,
+        canvasHeight,
+        this.x,
+        this.y,
+        this.speed,
+        this.radius,
+        this.id
+      );
+      this.balls.push(ball);
+      this.id++;
+    }
+    this.addNumber = 0;
+  }
+}
 
 // 				  class Block {
 // 					constructor(xId, level) {
