@@ -148,112 +148,115 @@ class App {
   }
 }
 
-// 	  class Ball {
-// 		constructor(canvasWidth, canvasHeight, x, y, speed, radius, id) {
-// 		  this.radius = radius;
-// 		  this.vx = 0;
-// 		  this.vy = 0;
-// 		  this.id = id;
+class Ball {
+  constructor(canvasWidth, canvasHeight, x, y, speed, radius, id) {
+    this.radius = radius;
+    this.vx = 0;
+    this.vy = 0;
+    this.id = id;
 
-// 		  const diameter = this.radius * 2;
-// 		  this.x = x;
-// 		  this.y = y;
+    const diameter = this.radius * 2;
+    this.x = x;
+    this.y = y;
 
-// 		  this.state = 0;
-// 		}
+    this.state = 0;
+  }
 
-// 		draw(ctx, canvasWidth, canvasHeight, balls, matrix, t) {
-// 		  if(this.state == 0) {
-// // setTimeout(() => {
-// //   this.state = 1;
-// // }, this.id * 30);
-// // //console.log('start time:', balls.startTime);
-// // if(t - balls.startTime > 6 * (this.id)) this.state = 1;
-// // else if(this.state == 1) {
-// 	this.x += this.vx;
-// 	this.y += this.vy;
-// 	this.bounceCanvas(canvasWidth, canvasHeight, balls);
-// 	this.bounceObject(balls, matrix);
+  draw(ctx, canvasWidth, canvasHeight, balls, matrix, t) {
+    if (this.state == 0) {
+      // setTimeout(() => {
+      //   this.state = 1;
+      // }, this.id * 30);
+      // //console.log('start time:', balls.startTime);
+      if (t - balls.startTime > 6 * this.id) this.state = 1;
+    } else if (this.state == 1) {
+      this.x += this.vx;
+      this.y += this.vy;
+      this.bounceCanvas(canvasWidth, canvasHeight, balls);
+      this.bounceObject(balls, matrix);
 
-// 	ctx.fillStyle = '#fdd700';
-// 	ctx.beginPath();
-// 	ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
-// 	ctx.fill();
-// 	ctx.closePath();
-//   // }
+      ctx.fillStyle = "#fdd700";
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.closePath();
+    }
+  }
 
-//   bounceCanvas(canvasWidth, canvasHeight, balls) {
-// 	const minX = 0;
-// 	const minY = 0;
-// 	const maxX = canvasWidth;
-// 	const maxY = canvasHeight;
+  bounceCanvas(canvasWidth, canvasHeight, balls) {
+    const minX = 0;
+    const minY = 0;
+    const maxX = canvasWidth;
+    const maxY = canvasHeight;
 
-// 	if(this.x < minX || this.x > maxX) {
-// 	  this.vx *= -1;
-// 	  this.x += this.vx;
-// 	} else if(this.y < minY) {
-// 	  this.vy *= -1;
-// 	  this.y += this.vy;
-// 	} else if(this.y > maxY - this.radius) {
-// 	  if(balls.state == 1) {
-// 		this.vx = Math.round(this.vx * (100 / 100));
-// 		this.vy = Math.round(this.vy * (100 / 100));
-// 		balls.y = canvasHeight - 12;
-// 		balls.state = 2;
-// 		//console.log(balls.x, balls.y);
-// 	  }
-// 	  this.state = 2;
-// 	  this.vx = 0;
-// 	  this.vy = 0;
-// 	  this.draw();
-// 	}
-//   }
+    if (this.x < minX || this.x > maxX) {
+      this.vx *= -1;
+      this.x += this.vx;
+    } else if (this.y < minY) {
+      this.vy *= -1;
+      this.y += this.vy;
+    } else if (this.y > maxY - this.radius) {
+      if (balls.state == 1) {
+        this.vx = Math.round(this.vx * (100 / 100));
+        this.vy = Math.round(this.vy * (100 / 100));
+        balls.y = canvasHeight - 12;
+        balls.state = 2;
+        //console.log(balls.x, balls.y);
+      }
+      this.state = 2;
+      this.vx = 0;
+      this.vy = 0;
+      this.draw();
+    }
+  }
 
-//   bounceObject(balls, matrix) {
-// 	matrix.objects.forEach((object) => {
-// 	  if((object.id != 1) && object.level > 1) {
-// 		const minX = object.x - this.radius;
-// 		const maxX = object.maxX + this.radius;
-// 		const minY = object.y + this.radius;
-// 		const maxY = object.maxY + this.radius;
-// 		if(this.x > minX && this.x < maxX && this.y > minY && this.y < maxY) {
-// 		  const x1 = Math.abs(minX - this.x);
-// 		  const x2 = Math.abs(maxX - this.x);
-// 		  const y1 = Math.abs(minY - this.y);
-// 		  const y2 = Math.abs(maxY - this.y);
-// 		  const min1 = Math.min(x1, x2);
-// 		  const min2 = Math.min(y1, y2);
-// 		  const min = Math.min(min1, min2);
+  bounceObject(balls, matrix) {
+    matrix.objects.forEach((object) => {
+      if (object.id != 1 && object.level > 1) {
+        const minX = object.x - this.radius;
+        const maxX = object.maxX + this.radius;
+        const minY = object.y + this.radius;
+        const maxY = object.maxY + this.radius;
+        if (this.x > minX && this.x < maxX && this.y > minY && this.y < maxY) {
+          const x1 = Math.abs(minX - this.x);
+          const x2 = Math.abs(maxX - this.x);
+          const y1 = Math.abs(minY - this.y);
+          const y2 = Math.abs(maxY - this.y);
+          const min1 = Math.min(x1, x2);
+          const min2 = Math.min(y1, y2);
+          const min = Math.min(min1, min2);
 
-// 		  if(min == min2) {
-// 			this.vy *= -1;
-// 			this.y += this.vy * 2;
-// 			object.level -= 1;
-// 			matrix.update();
-// 			//console.log(object);
-// 			} else if(min == min1) {
-// 			  this.vx *= -1;
-// 			  this.x += this.vx * 2;
-// 			  object.level -= 1;
-// 			  matrix.update();
-// 			  //console.log(object);
-// 			}
-// 			//console.log(object);
-// 			// if(object.level == 0 && object.id != 0) matrix.bonusBlockUpdate(object);
-// 			// if(object.level == 0 && object.id != 0) {
-// 			  balls.addNumber++;
-// 			  matrix.bonusBlockUpdate(object);
-// 			}
-// 			} else if(object.id == 1 && object.level == 1) {
-// 			  const minX = object.x - this.radius * 2;
-// 			  const maxX = object.maxX + this.radius;
-// 			  const minY = object.y - this.radius * 2;
-// 			  const maxY = object.maxY + this.radius;
-// 			  if(this.x > minX && this.x < maxX && this.y > minY && this.y < maxY) {
-// 				object.level -= 1;
-// 			  }
-// 			}
-// 			});
+          if (min == min2) {
+            this.vy *= -1;
+            this.y += this.vy * 2;
+            object.level -= 1;
+            matrix.update();
+            //console.log(object);
+          } else if (min == min1) {
+            this.vx *= -1;
+            this.x += this.vx * 2;
+            object.level -= 1;
+            matrix.update();
+            //console.log(object);
+          }
+          //console.log(object);
+          // if(object.level == 0 && object.id != 0) matrix.bonusBlockUpdate(object);
+          // if(object.level == 0 && object.id != 0) {
+          balls.addNumber++;
+          matrix.bonusBlockUpdate(object);
+        }
+      } else if (object.id == 1 && object.level == 1) {
+        const minX = object.x - this.radius * 2;
+        const maxX = object.maxX + this.radius;
+        const minY = object.y - this.radius * 2;
+        const maxY = object.maxY + this.radius;
+        if (this.x > minX && this.x < maxX && this.y > minY && this.y < maxY) {
+          object.level -= 1;
+        }
+      }
+    });
+  }
+}
 
 // 			class Balls {
 // 			  constructor(canvasWidth, canvasHeight) {
