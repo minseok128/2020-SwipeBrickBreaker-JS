@@ -816,7 +816,7 @@ class Game {
     this.bord = !localStorage.getItem("bord")
       ? []
       : JSON.parse(this.__(JSON.parse(localStorage.getItem("bord"))));
-    this.highScore = this.bord ? this.bord[0].score : 0;
+    this.highScore = this.bord == true ? this.bord[0].score : 0;
   }
 
   init(ctx, balls, matrix, canvasWidth, canvasHeight) {
@@ -839,13 +839,15 @@ class Game {
       "BRICK",
       "BREAKER",
       "0. 1. 4",
+      "press R key to Start",
       "press M key to see manual!",
       "MADE BY SAUP819",
     ];
 
     ctx.fillStyle = "#000000";
     let img = new Image();
-    img.src = "./asset/SBB.png";
+    // img.src = "./asset/SBB.png";
+    img.src = "./asset/tmp.png";
     ctx.drawImage(img, 0, 0);
 
     ctx.font = "100px BM YEONSUNG OTF";
@@ -962,7 +964,8 @@ class Game {
   drawManual(ctx) {
     ctx.fillStyle = "#000000";
     let img = new Image();
-    img.src = "./asset/manual.png";
+    // img.src = "./asset/manual.png";
+    img.src = "./asset/tmp.png";
     ctx.drawlmage(img, 0, 0, 600, 800);
   }
 
