@@ -366,53 +366,73 @@ class Balls {
   }
 }
 
-// 				  class Block {
-// 					constructor(xId, level) {
-// 					  this.id = 0;
-// 					  this.xId = xId;
-// 					  this.yId = 0;
-// 					  this.x = this.xId * 100;
-// 					  this.y = this.yId * 50;
-// 					  this.level = level;
-// 					  this.maxLevel = level;
-// 					  this.width = 100;
-// 					  this.height = 50;
-// 					  this.maxX = this.x + this.width;
-// 					  this.maxY = this.y + this.height;
-// 					  this.particles;
+class Block {
+  constructor(xId, level) {
+    this.id = 0;
+    this.xId = xId;
+    this.yId = 0;
+    this.x = this.xId * 100;
+    this.y = this.yId * 50;
+    this.level = level;
+    this.maxLevel = level;
+    this.width = 100;
+    this.height = 50;
+    this.maxX = this.x + this.width;
+    this.maxY = this.y + this.height;
+    this.particles;
+  }
 
-// 					  // ...
-// 					}
+  draw(ctx, matrixLevel) {
+    if (this.level > 0) {
+      ctx.fillStyle = `rgba(255, 56, 78, ${
+        (1 / (matrixLevel - 1)) * this.level * (0.9 + 0.1)
+      })`;
+      ctx.strokeRoundedRect(
+        ctx,
+        this.x + 2,
+        this.y + 2,
+        this.width - 4,
+        this.height - 4,
+        5
+      );
+      ctx.fillText(
+        `${this.level}`,
+        this.x + this.width / 2,
+        this.y + this.height / 2
+      );
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillStyle = "#ffffff";
+      ctx.fillText(
+        `${this.level}`,
+        this.x + this.width / 2,
+        this.y + this.height / 2
+      );
+    } else if (this.level == 0) {
+      this.particles = new Particles(
+        this.x + this.width / 2,
+        this.y + this.height / 2,
+        this.maxLevel,
+        this.id
+      );
+      this.particles.draw(ctx);
+    } else if (this.level == -1) {
+      this.level = -2;
+      if (this.particles.state == -1) this.level = -2;
+    }
+  }
 
-// 					draw(ctx, matrixLevel) {
-// 					  if(this.level > 0) {
-// 						ctx.fillStyle = `rgba(255, 56, 78, ${1 / (matrixLevel - 1) * this.level * (0.9 + 0.1)})`;
-// 						ctx.strokeRoundedRect(ctx, this.x + 2, this.y + 2, this.width - 4, this.height - 4, 5);
-// 						ctx.fillText(`${this.level}`, this.x + this.width / 2, this.y + this.height / 2);
-// 						ctx.textAlign = "center";
-// 						ctx.textBaseline = "middle";
-// 						ctx.fillStyle = "#ffffff";
-// 						ctx.fillText(`${this.level}`, this.x + this.width / 2, this.y + this.height / 2);
-// 					  } else if(this.level == 0) {
-// 						this.particles = new Particles(this.x + this.width / 2, this.y + this.height / 2, this.maxLevel, this.id);
-// 						this.particles.draw(ctx);
-// 					  } else if(this.level == -1) {
-// 						this.level = -2;
-// 					  }
-// 					  if(this.particles.state == -1) this.level = -2;
-// 					}
-// 				  }
-
-// 				  strokeRoundedRect(ctx, x, y, width, height, radius) {
-// 					ctx.beginPath();
-// 					ctx.moveTo(x + radius, y);
-// 					ctx.arcTo(x + width, y, x + width, y + height, radius);
-// 					ctx.arcTo(x + width, y + height, x, y + height, radius);
-// 					ctx.arcTo(x, y + height, x, y, radius);
-// 					ctx.arcTo(x, y, x + width, y, radius);
-// 					ctx.closePath();
-// 					ctx.fill();
-// 				  }
+  strokeRoundedRect(ctx, x, y, width, height, radius) {
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.arcTo(x + width, y, x + width, y + height, radius);
+    ctx.arcTo(x + width, y + height, x, y + height, radius);
+    ctx.arcTo(x, y + height, x, y, radius);
+    ctx.arcTo(x, y, x + width, y, radius);
+    ctx.closePath();
+    ctx.fill();
+  }
+}
 
 // 				  class BonusBlock {
 // 					constructor(xId, level, id) {
