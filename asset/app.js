@@ -605,49 +605,49 @@ class Aura {
   }
 }
 
-// class Particles {
-//   constructor(x, y, maxLevel, blockId) {
-//     this.x = x;
-//     this.y = y;
-//     this.blockId = blockId;
-//     this.color = blockId == 0 ? "rgba(255, 56, 78," : "rgba(50, 177, 108,";
-//     this.particles = new Array();
-//     const particleCount = maxLevel * 2 < 200 ? maxLevel * 2 : 200;
-//     const power = 20;
-//     let radians = (Math.PI * 2) / particleCount;
-//     this.state = 1;
+class Particles {
+  constructor(x, y, maxLevel, blockId) {
+    this.x = x;
+    this.y = y;
+    this.blockId = blockId;
+    this.color = blockId == 0 ? "rgba(255, 56, 78," : "rgba(50, 177, 108,";
+    this.particles = new Array();
+    const particleCount = maxLevel * 2 < 200 ? maxLevel * 2 : 200;
+    const power = 20;
+    let radians = (Math.PI * 2) / particleCount;
+    this.state = 1;
 
-//     for (let i = 0; i < particleCount; i++) {
-//       this.particles.push(
-//         new Particle(
-//           this.x,
-//           this.y,
-//           6,
-//           Math.cos(radians * i) * (Math.random() * power),
-//           Math.sin(radians * i) * (Math.random() * power),
-//           this.color
-//         )
-//       );
-//     }
+    for (let i = 0; i < particleCount; i++) {
+      this.particles.push(
+        new Particle(
+          this.x,
+          this.y,
+          6,
+          Math.cos(radians * i) * (Math.random() * power),
+          Math.sin(radians * i) * (Math.random() * power),
+          this.color
+        )
+      );
+    }
 
-//     if (this.blockId != 0) {
-//       this.particles.push(new Aura(this.x, this.y, this.blockId));
-//     }
-//   }
+    if (this.blockId != 0) {
+      this.particles.push(new Aura(this.x, this.y, this.blockId));
+    }
+  }
 
-//   draw(ctx) {
-//     if (this.particles.length == 0) {
-//       this.state = -1;
-//     }
-//     this.particles.forEach((particle, i) => {
-//       if (particle.opacity > 0) {
-//         particle.update(ctx);
-//       } else {
-//         this.particles.splice(i, 1);
-//       }
-//     });
-//   }
-// }
+  draw(ctx) {
+    if (this.particles.length <= 0) {
+      this.state = -1;
+    }
+    this.particles.forEach((particle, i) => {
+      if (particle.opacity >= 0) {
+        particle.update(ctx);
+      } else {
+        this.particles.splice(i, 1);
+      }
+    });
+  }
+}
 
 // 					  class Bonus {
 // 						constructor(xId) {
