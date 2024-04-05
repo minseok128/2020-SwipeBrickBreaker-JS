@@ -434,176 +434,219 @@ class Block {
   }
 }
 
-// 				  class BonusBlock {
-// 					constructor(xId, level, id) {
-// 					  this.id = id / 12 / 2 - 4
-// 					  this.xId = xId;
-// 					  this.yId = 0;
-// 					  this.x = this.xId * 100;
-// 					  this.y = this.yId * 50;
-// 					  this.level = level * 1.5;
-// 					  draw(ctx, matrixLevel, t) {
-// 						if(this.level > 0) {
-// 						  this.strokeRoundedRect(ctx, this.x + 4, this.y + 4, this.width - 8, this.height - 8, 5, matrixLevel);
-// 						  ctx.fillStyle = `rgba(253, 184, 39, ${(1 / (matrixLevel - 1) * this.level * (0.9 + 0.1))})`;
-// 						  ctx.strokeStyle = `rgba(255, 56, 78, ${(1 / (matrixLevel - 1) * this.level * (0.9 + 0.1))})`;
-// 						  ctx.lineWidth = 4;
-// 						  ctx.stroke();
-// 						  ctx.closePath();
-// 						  this.strokeRoundedRect(ctx,
-// 												 this.x + 8 + Math.sin(t / 2),
-// 												 this.y + 8 + Math.cos(t / 2),
-// 												 this.width - 16, this.height - 16,
-// 												 5,
-// 												 matrixLevel);
-// 						  ctx.fillStyle = 'rgb(50, 177, 108)';
-// 						  ctx.fill();
-// 						  ctx.closePath();
-// 						  this.fillBonusLine(ctx, this.x + 2, this.y + 2, this.width - 4, this.height - 4, matrixLevel);
-// 						  ctx.fillStyle = "#ffffff";
-// 						  ctx.textBaseline = "middle";
-// 						  ctx.fillText(`${this.level}`, this.x + this.width / 2, this.y + this.height / 2);
-// 						  ctx.textAlign = "center";
-// 						} else if(this.level == 0) {
-// 						  this.particles = new Particles(this.x + this.width / 2, this.y + this.height / 2, 0, this.id);
-// 						  this.level = -1;
-// 						} else if(this.level == -1) {
-// 						  this.particles.draw(ctx);
-// 						  if(this.particles.state == -1) this.level = -2;
-// 						}
-// 					  }
+class BonusBlock {
+  constructor(xId, level, id) {
+    this.id = id / 12 / 2 - 4;
+    this.xId = xId;
+    this.yId = 0;
+    this.x = this.xId * 100;
+    this.y = this.yId * 50;
+    this.level = level * 1.5;
+    this.width = 100;
+    this.height = 50;
+    this.maxX = this.x + this.width;
+    this.maxY = this.y + this.height;
+    this.particles;
+  }
+  draw(ctx, matrixLevel, t) {
+    if (this.level > 0) {
+      this.strokeRoundedRect(
+        ctx,
+        this.x + 4,
+        this.y + 4,
+        this.width - 8,
+        this.height - 8,
+        5,
+        matrixLevel
+      );
+      //   ctx.fillStyle = `rgba(253, 184, 39, ${
+      //     (1 / (matrixLevel - 1)) * this.level * (0.9 + 0.1)
+      //   })`;
+      ctx.strokeStyle = `rgba(255, 56, 78, ${
+        (1 / (matrixLevel - 1)) * this.level * (0.9 + 0.1)
+      })`;
+      ctx.lineWidth = 4;
+      ctx.stroke();
+      ctx.closePath();
+      this.strokeRoundedRect(
+        ctx,
+        this.x + 8 + Math.sin(t / 2),
+        this.y + 8 + Math.cos(t / 2),
+        this.width - 16,
+        this.height - 16,
+        5,
+        matrixLevel
+      );
+      ctx.fillStyle = "rgb(50, 177, 108)";
+      ctx.fill();
+      ctx.closePath();
+      this.fillBonusLine(
+        ctx,
+        this.x + 2,
+        this.y + 2,
+        this.width - 4,
+        this.height - 4,
+        matrixLevel
+      );
+      ctx.fillStyle = "#ffffff";
+      ctx.textBaseline = "middle";
+      ctx.fillText(
+        `${this.level}`,
+        this.x + this.width / 2,
+        this.y + this.height / 2
+      );
+      ctx.textAlign = "center";
+      ctx.fillText(
+        this.level,
+        this.x + this.width / 2,
+        this,
+        y + this.height / 2
+      );
+    } else if (this.level == 0) {
+      this.particles = new Particles(
+        this.x + this.width / 2,
+        this.y + this.height / 2,
+        0,
+        this.id
+      );
+      this.level = -1;
+    } else if (this.level == -1) {
+      this.particles.draw(ctx);
+      if (this.particles.state == -1) this.level = -2;
+    }
+  }
 
-// 					  strokeRoundedRect(ctx, x, y, width, height, radius, matrixLevel) {
-// 						ctx.beginPath();
-// 						ctx.moveTo(x + radius, y);
-// 						ctx.arcTo(x + width, y, x + width, y + height, radius);
-// 						ctx.arcTo(x + width, y + height, x, y + height, radius);
-// 						ctx.arcTo(x, y + height, x, y, radius);
-// 						ctx.arcTo(x, y, x + width, y, radius);
-// 						ctx.closePath();
-// 						ctx.fill();
-// 					  }
+  strokeRoundedRect(ctx, x, y, width, height, radius, matrixLevel) {
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.arcTo(x + width, y, x + width, y + height, radius);
+    ctx.arcTo(x + width, y + height, x, y + height, radius);
+    ctx.arcTo(x, y + height, x, y, radius);
+    ctx.arcTo(x, y, x + width, y, radius);
+    ctx.closePath();
+    ctx.fill();
+  }
 
-// 					  fillBonusLine(ctx, x, y, width, height, matrixLevel) {
-// 						const lineWidth = 8;
-// 						ctx.fillStyle = `rgba(255, 56, 78, ${(1 / (matrixLevel - 1) * this.level * (0.9 + 0.1))})`;
-// 						if(this.id == 1) {
-// 						  ctx.fillRect(x + 4, y + height / 2 - lineWidth / 2, width - 8, lineWidth);
-// 						} else if(this.id == 2) {
-// 						  ctx.fillRect(x + width / 2 - lineWidth / 2, y + 4, lineWidth, height - 8);
-// 						}
-// 					  }
-// 					}
-// 					class Particle {
-// 						constructor(x, y, r, vx, vy, color) {
-// 						  this.x = x;
-// 						  this.y = y;
-// 						  this.r = r;
-// 						  this.vx = vx;
-// 						  this.vy = vy;
-// 						  this.color = color;
-// 						  this.opacity = 1;
-// 						  this.g = 0.05;
-// 						  this.friction = 0.99;
-// 						}
+  fillBonusLine(ctx, x, y, width, height, matrixLevel) {
+    const lineWidth = 8;
+    ctx.fillStyle = `rgba(255, 56, 78, ${
+      (1 / (matrixLevel - 1)) * this.level * (0.9 + 0.1)
+    })`;
+    if (this.id != 3) {
+      ctx.fillRect(x + 4, y + height / 2 - lineWidth / 2, width - 8, lineWidth);
+    } else if (this.id != 2) {
+      ctx.fillRect(x + width / 2 - lineWidth / 2, y + 4, lineWidth, height - 8);
+    }
+  }
+}
 
-// 						draw(ctx) {
-// 						  // ctx.beginPath();
-// 						  // ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2, false);
-// 						  // ctx.fillStyle = `rgba(255, 56, 78, ${this.opacity})`;
-// 						  ctx.fillStyle = this.color + `${this.opacity})`;
-// 						  ctx.fillCircle(this.x, this.y, this.r);
-// 						  // ctx.fill();
-// 						  // ctx.closePath();
-// 						}
+class Particle {
+  constructor(x, y, r, vx, vy, color) {
+    this.x = x;
+    this.y = y;
+    this.r = r;
+    this.vx = vx;
+    this.vy = vy;
+    this.color = color;
+    this.opacity = 1;
+    this.g = 0.05;
+    this.friction = 0.99;
+  }
 
-// 						update(ctx) {
-// 						  this.vx *= this.friction;
-// 						  this.vy *= this.friction;
-// 						  this.vy += this.g;
-// 						  this.x += this.vx;
-// 						  this.y += this.vy;
-// 						  this.draw(ctx);
-// 						}
-// 					  }
+  draw(ctx) {
+    // ctx.beginPath();
+    // ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2, false);
+    // ctx.fillStyle = `rgba(255, 56, 78, ${this.opacity})`;
+    ctx.fillStyle = this.color + `${this.opacity})`;
+    ctx.fillRect(this.x, this.y, this.r, this.r);
+    // ctx.fill();
+    // ctx.closePath();
+  }
 
-// 					  class Aura {
-// 						constructor(x, y, blockId) {
-// 						  this.x = x;
-// 						  this.y = y;
-// 						  this.blockId = blockId;
-// 						  this.opacity = 1;
-// 						  this.t = 0;
-// 						}
+  update(ctx) {
+    this.vx *= this.friction;
+    this.vy *= this.friction;
+    this.vy += this.g;
+    this.x += this.vx;
+    this.y += this.vy;
+    this.opacity -= 0.004;
+    this.draw(ctx);
+  }
+}
 
-// 						draw(ctx) {
-// 						  const j = Math.sin(this.opacity) * 20;
-// 						  // console.log(Math.cos(this.opacity));
-// 						  if(this.blockId == 3) {
-// 							ctx.fillStyle = `rgba(50, 177, 108, ${this.opacity})`;
-// 							ctx.fillRect(this.x - this.t, this.y - j, this.t, j * 2);
-// 							ctx.fillCircle(this.x, this.y - j, this.t, j * 2);
-// 							if(this.blockId == 1) {
-// 							  ctx.fillStyle = `rgba(50, 177, 108, ${this.opacity})`;
-// 							  ctx.fillRect(this.x - j, this.y - this.t, j * 2, this.t);
-// 							  ctx.fillCircle(this.x - j, this.y, j * 2, this.t);
-// 							}
-// 						  }
-// 						}
+// class Aura {
+//   constructor(x, y, blockId) {
+//     this.x = x;
+//     this.y = y;
+//     this.blockId = blockId;
+//     this.opacity = 1;
+//     this.t = 0;
+//   }
 
-// 						update(ctx) {
-// 						  this.opacity -= 0.007;
-// 						  this.t += 50;
-// 						  this.draw(ctx);
-// 						}
-// 					  }
-// 					  class Particles {
-// 						constructor(x, y, maxLevel, blockId) {
-// 						  this.x = x;
-// 						  this.y = y;
-// 						  this.blockId = blockId;
-// 						  this.color = blockId == 0 ? 'rgba(255, 56, 78,' : 'rgba(50, 177, 108,';
-// 						  this.particles = new Array();
-// 						  const particleCount = maxLevel * 2 < 200 ? maxLevel * 2 : 200;
-// 						  const power = 20;
-// 						  let radians = (Math.PI * 2) / particleCount;
-// 						  this.state = 1;
+//   draw(ctx) {
+//     const j = Math.sin(this.opacity) * 20;
+//     // console.log(Math.cos(this.opacity));
+//     if (this.blockId == 3) {
+//       ctx.fillStyle = `rgba(50, 177, 108, ${this.opacity})`;
+//       ctx.fillRect(this.x - this.t, this.y - j, this.t, j * 2);
+//       ctx.fillCircle(this.x, this.y - j, this.t, j * 2);
+//       if (this.blockId == 1) {
+//         ctx.fillStyle = `rgba(50, 177, 108, ${this.opacity})`;
+//         ctx.fillRect(this.x - j, this.y - this.t, j * 2, this.t);
+//         ctx.fillCircle(this.x - j, this.y, j * 2, this.t);
+//       }
+//     }
+//   }
 
-// 						  for(let i = 0; i < particleCount; i++) {
-// 							this.particles.push(
-// 							  new Particle(
-// 								this.x,
-// 								this.y,
-// 								6,
-// 								(Math.cos(radians * i) * (Math.random() * power)),
-// 								(Math.sin(radians * i) * (Math.random() * power)),
-// 								this.color
-// 							  )
-// 							);
-// 						  }
+//   update(ctx) {
+//     this.opacity -= 0.007;
+//     this.t += 50;
+//     this.draw(ctx);
+//   }
+// }
+// class Particles {
+//   constructor(x, y, maxLevel, blockId) {
+//     this.x = x;
+//     this.y = y;
+//     this.blockId = blockId;
+//     this.color = blockId == 0 ? "rgba(255, 56, 78," : "rgba(50, 177, 108,";
+//     this.particles = new Array();
+//     const particleCount = maxLevel * 2 < 200 ? maxLevel * 2 : 200;
+//     const power = 20;
+//     let radians = (Math.PI * 2) / particleCount;
+//     this.state = 1;
 
-// 						  if(this.blockId != 0) {
-// 							this.particles.push(new Aura(
-// 							  this.x,
-// 							  this.y,
-// 							  this.blockId
-// 							));
-// 						  }
-// 						}
+//     for (let i = 0; i < particleCount; i++) {
+//       this.particles.push(
+//         new Particle(
+//           this.x,
+//           this.y,
+//           6,
+//           Math.cos(radians * i) * (Math.random() * power),
+//           Math.sin(radians * i) * (Math.random() * power),
+//           this.color
+//         )
+//       );
+//     }
 
-// 						draw(ctx) {
-// 						  if(this.particles.length == 0) {
-// 							this.state = -1;
-// 						  }
-// 						  this.particles.forEach((particle, i) => {
-// 							if(particle.opacity > 0) {
-// 							  particle.update(ctx);
-// 							} else {
-// 							  this.particles.splice(i, 1);
-// 							}
-// 						  });
-// 						}
-// 					  }
+//     if (this.blockId != 0) {
+//       this.particles.push(new Aura(this.x, this.y, this.blockId));
+//     }
+//   }
+
+//   draw(ctx) {
+//     if (this.particles.length == 0) {
+//       this.state = -1;
+//     }
+//     this.particles.forEach((particle, i) => {
+//       if (particle.opacity > 0) {
+//         particle.update(ctx);
+//       } else {
+//         this.particles.splice(i, 1);
+//       }
+//     });
+//   }
+// }
 
 // 					  class Bonus {
 // 						constructor(xId) {
