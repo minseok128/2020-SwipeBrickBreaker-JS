@@ -119,6 +119,12 @@ class App {
           this.game,
           this.t
           );
+        this.matrix.draw(
+          this.ctx,
+          this.game,
+          this.t,
+          this.balls
+          );
       } else if (this.game.state == 2) {
         this.game.drawGameOver(
           this.ctx,
@@ -239,7 +245,7 @@ class Ball {
         const minY = object.y - this.radius * 2;
         const maxY = object.maxY + this.radius;
         if (this.x > minX && this.x < maxX && this.y > minY && this.y < maxY) {
-          object.level -= 1;
+          object.level = -1;
         }
       }
     });
@@ -374,7 +380,7 @@ class Block {
       ctx.fillStyle = `rgba(255, 56, 78, ${
         (1 / (matrixLevel - 1)) * this.level * 0.9 + 0.1
       })`;
-      ctx.strokeRoundedRect(
+      this.strokeRoundedRect(
         ctx,
         this.x + 2,
         this.y + 2,
@@ -487,7 +493,8 @@ class BonusBlock {
         this.y + this.height / 2,
         0,
         this.id
-      );
+        );
+        console.log(this.particles);
       this.level = -1;
     } else if (this.level == -1) {
       this.particles.draw(ctx);
@@ -551,36 +558,36 @@ class Particle {
   }
 }
 
-class Aura {
-  constructor(x, y, blockId) {
-    this.x = x;
-    this.y = y;
-    this.blockId = blockId;
-    this.opacity = 1;
-    this.t = 0;
-  }
-
-  draw(ctx) {
-    const j = Math.sin(this.opacity) * 20;
-    // console.log(Math.cos(this.opacity));
-    if (this.blockId != 3) {
-      ctx.fillStyle = `rgba(50, 177, 108, ${this.opacity})`;
-      ctx.fillRect(this.x - this.t, this.y - j, this.t, j * 2);
-      ctx.fillRect(this.x, this.y - j, this.t, j * 2);
+  class Aura {
+    constructor(x, y, blockId) {
+      this.x = x;
+      this.y = y;
+      this.blockId = blockId;
+      this.opacity = 1;
+      this.t = 0;
     }
-    if (this.blockId != 2) {
-      ctx.fillStyle = `rgba(50, 177, 108, ${this.opacity})`;
-      ctx.fillRect(this.x - j, this.y - this.t, j * 2, this.t);
-      ctx.fillRect(this.x - j, this.y, j * 2, this.t);
+
+    draw(ctx) {
+      const j = Math.sin(this.opacity) * 20;
+      // console.log(Math.cos(this.opacity));
+      if (this.blockId != 3) {
+        ctx.fillStyle = `rgba(50, 177, 108, ${this.opacity})`;
+        ctx.fillRect(this.x - this.t, this.y - j, this.t, j * 2);
+        ctx.fillRect(this.x, this.y - j, this.t, j * 2);
+      }
+      if (this.blockId != 2) {
+        ctx.fillStyle = `rgba(50, 177, 108, ${this.opacity})`;
+        ctx.fillRect(this.x - j, this.y - this.t, j * 2, this.t);
+        ctx.fillRect(this.x - j, this.y, j * 2, this.t);
+      }
+    }
+
+    update(ctx) {
+      this.opacity -= 0.007;
+      this.t += 50;
+      this.draw(ctx);
     }
   }
-
-  update(ctx) {
-    this.opacity -= 0.007;
-    this.t += 50;
-    this.draw(ctx);
-  }
-}
 
 class Particles {
   constructor(x, y, maxLevel, blockId) {
@@ -729,10 +736,11 @@ class Matrix {
     //console.log(this.level, array);
     for (let i = 0; i < randomNum; i++) {
       if (array[i] == bonusId) {
-        if (this.level % 10 == 0) {
+        if (this.level % 2 == 0) {
           const bonusBlockId = this.getRandomInt(2, 4);
           const bonus = new BonusBlock(array[i], this.level, bonusBlockId);
           this.matrix.push(bonus);
+          console.log(bonus);
         } else {
           const bonus = new Bonus(array[i]);
           this.matrix.push(bonus);
@@ -772,7 +780,6 @@ class Matrix {
     if (object.id != 3) {
       this.matrix.forEach((o) => {
         if (o.yId == object.yId) o.level = 0;
-        o.level = -1;
       });
     }
     if (object.id != 2) {
@@ -792,7 +799,7 @@ class Game {
     this.name = "";
     this.bord = !localStorage.getItem("bord")
       ? []
-      : JSON.parse(this.__(JSON.parse(localStorage.getItem("bord"))));
+      : JSON.parse(this.decodeString(JSON.parse(localStorage.getItem("bord"))));
     this.highScore = this.bord == true ? this.bord[0].score : 0;
   }
 
@@ -804,7 +811,7 @@ class Game {
     matrix.init(this);
     this.name = "";
     this.bord = localStorage.getItem("bord")
-      ? JSON.parse(this.__(JSON.parse(localStorage.getItem("bord"))))
+      ? JSON.parse(this.decodeString(JSON.parse(localStorage.getItem("bord"))))
       : [];
     this.highScore = this.bord == true ? this.bord[0].score : 0;
   }
@@ -874,7 +881,7 @@ class Game {
       this.bord.sort((a, b) => b.score - a.score).reverse();
       localStorage.setItem(
         "bord",
-        JSON.stringify(this._________(JSON.stringfy(bord)))
+        JSON.stringify(this.encodeArray(JSON.stringify(this.bord)))
       );
     }
 
