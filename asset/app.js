@@ -13,7 +13,7 @@ class App {
     this.t = 0;
 
     document.addEventListener("keydown", (e) => {
-      console.log(e.keyCode);
+       // console.log(e.keyCode);
       switch (e.keyCode) {
         case 82:
           if (this.game.state == 0) {
@@ -39,7 +39,7 @@ class App {
         case 73:
           if (!this.game.state && e.altKey) {
             localStorage.clear();
-            console.log("Init Game.");
+             // console.log("Init Game.");
           }
           break;
         case 77:
@@ -137,7 +137,7 @@ class App {
       }
 
       this.t += 1;
-      //console.log(t);
+      // // console.log(t);
     }, 5);
   }
 }
@@ -161,7 +161,7 @@ class Ball {
       // setTimeout(() => {
       //   this.state = 1;
       // }, this.id * 30);
-      // //console.log('start time:', balls.startTime);
+      // // // console.log('start time:', balls.startTime);
       if (t - balls.startTime >= 6 * this.id) this.state = 1;
     } else if (this.state == 1) {
       this.x += this.vx;
@@ -194,7 +194,7 @@ class Ball {
         balls.x = Math.round((this.x * 100) / 100);
         balls.y = canvasHeight - 12;
         balls.state = 2;
-        //console.log(balls.x, balls.y);
+        // // console.log(balls.x, balls.y);
       }
       this.state = 2;
       this.vx = 0;
@@ -224,15 +224,15 @@ class Ball {
             this.y += this.vy * 2;
             object.level -= 1;
             matrix.update();
-            //console.log(object);
+            // // console.log(object);
           } else if (min == min1) {
             this.vx *= -1;
             this.x += this.vx * 2;
             object.level -= 1;
             matrix.update();
-            //console.log(object);
+            // // console.log(object);
           }
-          //console.log(object);
+          // // console.log(object);
           // if(object.level == 0 && object.id != 0) matrix.bonusBlockUpdate(object);
           if(object.level == 0 && object.id != 0) {
             balls.addNumber++;
@@ -313,7 +313,7 @@ class Balls {
     let vx = 0;
     let vy = 0;
     const theta = -Math.atan2(deltaY, delta);
-    //console.log(theta);
+    // // console.log(theta);
     if (theta <= 0.17) {
       vx = Math.round(this.speed * 10 * Math.cos(0.17) / 10);
       vy = Math.abs(Math.round(this.speed * 10 * Math.sin(0.17)) / 10) * -1;
@@ -325,7 +325,7 @@ class Balls {
       vy = Math.abs(Math.round(this.speed * 100 * Math.sin(theta)) / 100) * -1;
     }
     this.startTime = t;
-    //console.log(t);
+    // // console.log(t);
     this.balls.forEach((ball) => {
       ball.vx = vx;
       ball.vy = vy;
@@ -494,7 +494,7 @@ class BonusBlock {
         0,
         this.id
         );
-        console.log(this.particles);
+         // console.log(this.particles);
       this.level = -1;
     } else if (this.level == -1) {
       this.particles.draw(ctx);
@@ -516,11 +516,10 @@ class BonusBlock {
     ctx.fillStyle = `rgba(255, 56, 78, ${
       (1 / (matrixLevel - 1)) * this.level * 0.9 + 0.1
     })`;
-    if (this.id != 3) {
+    if (this.id != 3)
       ctx.fillRect(x + 4, y + height / 2 - lineWidth / 2, width - 8, lineWidth);
-    } else if (this.id != 2) {
+    if (this.id != 2)
       ctx.fillRect(x + width / 2 - lineWidth / 2, y + 4, lineWidth, height - 8);
-    }
   }
 }
 
@@ -569,7 +568,7 @@ class Particle {
 
     draw(ctx) {
       const j = Math.sin(this.opacity) * 20;
-      // console.log(Math.cos(this.opacity));
+      //  // console.log(Math.cos(this.opacity));
       if (this.blockId != 3) {
         ctx.fillStyle = `rgba(50, 177, 108, ${this.opacity})`;
         ctx.fillRect(this.x - this.t, this.y - j, this.t, j * 2);
@@ -687,7 +686,7 @@ class Matrix {
   init(game) {
     this.matrix = new Array();
     this.level = 1;
-    //console.log(game);
+    // // console.log(game);
     this.addNewLine(game);
     this.stage = 0;
   }
@@ -718,43 +717,43 @@ class Matrix {
       this.stage++;
       this.randomArray = this.randomMatrix[this.stage];
     }
-    //console.log(this.randomArray);
+    // // console.log(this.randomArray);
 
     let newLineElements = new Array();
     let j = this.getRandomInt(0, 19);
     const randomNum = this.randomArray[j] + 1;
-    //console.log(randomNum);
+    // // console.log(randomNum);
     let bonusId;
     let array = new Array(0, 1, 2, 3, 4, 5);
     while (array.length > randomNum) {
       array.splice(Math.round(Math.random() * array.length), 1);
     }
-    //console.log(array);
+    // // console.log(array);
     while (!bonusId) {
       bonusId = array[this.getRandomInt(0, array.length)];
     }
-    //console.log(this.level, array);
+    // // console.log(this.level, array);
     for (let i = 0; i < randomNum; i++) {
       if (array[i] == bonusId) {
         if (this.level % 2 == 0) {
           const bonusBlockId = this.getRandomInt(2, 4);
           const bonus = new BonusBlock(array[i], this.level, bonusBlockId);
           this.matrix.push(bonus);
-          console.log(bonus);
+           // console.log(bonus);
         } else {
           const bonus = new Bonus(array[i]);
           this.matrix.push(bonus);
         }
-        //console.log(bonus);
+        // // console.log(bonus);
       } else {
         const block = new Block(array[i], this.level);
-        //console.log(block);
+        // // console.log(block);
         this.matrix.push(block);
       }
     }
     this.level++;
 
-    //console.log(this.matrix.some(object => object.level) == -1 && object.yId == -3));
+    // // console.log(this.matrix.some(object => object.level) == -1 && object.yId == -3));
     this.matrix.forEach((object) => {
       if (object.level > -1 && object.yId == 13) {
         if (object.id != 1) game.state = 2;
@@ -776,7 +775,7 @@ class Matrix {
   }
 
   bonusBlockUpdate(object) {
-    //console.log(object);
+    // // console.log(object);
     if (object.id != 3) {
       this.matrix.forEach((o) => {
         if (o.yId == object.yId) o.level = 0;
