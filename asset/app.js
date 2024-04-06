@@ -735,7 +735,7 @@ class Matrix {
     // // console.log(this.level, array);
     for (let i = 0; i < randomNum; i++) {
       if (array[i] == bonusId) {
-        if (this.level % 2 == 0) {
+        if (this.level % 10 == 0) {
           const bonusBlockId = this.getRandomInt(2, 4);
           const bonus = new BonusBlock(array[i], this.level, bonusBlockId);
           this.matrix.push(bonus);
@@ -753,7 +753,6 @@ class Matrix {
     }
     this.level++;
 
-    // // console.log(this.matrix.some(object => object.level) == -1 && object.yId == -3));
     this.matrix.forEach((object) => {
       if (object.level > -1 && object.yId == 13) {
         if (object.id != 1) game.state = 2;
