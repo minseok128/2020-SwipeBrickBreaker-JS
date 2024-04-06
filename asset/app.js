@@ -31,13 +31,13 @@ class App {
           if (this.game.state == 1) this.game.state = 2;
           break;
         case 75:
-          if (!this.game.state)
+          if (!!this.game.state)
             this.balls.balls.forEach((ball) => {
               if (ball.state == 1) ball.y = this.canvas.height + 1;
             });
           break;
         case 73:
-          if ([this.game.state & e.altKey]) {
+          if (!this.game.state && e.altKey) {
             localStorage.clear();
             console.log("Init Game.");
           }
@@ -105,33 +105,21 @@ class App {
           this.t
         );
       } else if (this.game.state == 1) {
-        this.balls.draw(
-          this.ctx,
-          this.canvas.width,
-          this.canvas.height,
-          this.balls
-        );
         this.game.drawGame(
           this.ctx,
           this.canvas.width,
           this.canvas.height,
-          this.matrix,
-          this.game
-        );
-      } else if (this.game.state == 2) {
-        this.matrix.draw(
-          this.ctx,
-          this.canvas.width,
-          this.canvas.height,
-          this.matrix,
-          this.game
-        );
+          this.balls
+          );
         this.balls.draw(
           this.ctx,
           this.canvas.width,
           this.canvas.height,
-          this.balls
-        );
+          this.matrix,
+          this.game,
+          this.t
+          );
+      } else if (this.game.state == 2) {
         this.game.drawGameOver(
           this.ctx,
           this.canvas.width,
@@ -168,7 +156,7 @@ class Ball {
       //   this.state = 1;
       // }, this.id * 30);
       // //console.log('start time:', balls.startTime);
-      if (t - balls.startTime > 6 * this.id) this.state = 1;
+      if (t - balls.startTime >= 6 * this.id) this.state = 1;
     } else if (this.state == 1) {
       this.x += this.vx;
       this.y += this.vy;
@@ -189,16 +177,15 @@ class Ball {
     const maxX = canvasWidth;
     const maxY = canvasHeight;
 
-    if (this.x < minX || this.x > maxX) {
+    if (this.x <= minX || this.x >= maxX) {
       this.vx *= -1;
       this.x += this.vx;
-    } else if (this.y < minY) {
+    } else if (this.y <= minY) {
       this.vy *= -1;
       this.y += this.vy;
-    } else if (this.y > maxY - this.radius) {
+    } else if (this.y >= maxY - this.radius) {
       if (balls.state == 1) {
-        this.vx = Math.round(this.vx * (100 / 100));
-        this.vy = Math.round(this.vy * (100 / 100));
+        balls.x = Math.round((this.x * 100) / 100);
         balls.y = canvasHeight - 12;
         balls.state = 2;
         //console.log(balls.x, balls.y);
@@ -211,17 +198,17 @@ class Ball {
   }
 
   bounceObject(balls, matrix) {
-    matrix.objects.forEach((object) => {
-      if (object.id != 1 && object.level > 1) {
+    matrix.matrix.forEach((object) => {
+      if (object.id != 1 && object.level >= 1) {
         const minX = object.x - this.radius;
         const maxX = object.maxX + this.radius;
-        const minY = object.y + this.radius;
+        const minY = object.y - this.radius;
         const maxY = object.maxY + this.radius;
         if (this.x > minX && this.x < maxX && this.y > minY && this.y < maxY) {
           const x1 = Math.abs(minX - this.x);
-          const x2 = Math.abs(maxX - this.x);
+          const x2 = Math.abs(this.x - maxX);
           const y1 = Math.abs(minY - this.y);
-          const y2 = Math.abs(maxY - this.y);
+          const y2 = Math.abs(this.y - maxY);
           const min1 = Math.min(x1, x2);
           const min2 = Math.min(y1, y2);
           const min = Math.min(min1, min2);
@@ -241,9 +228,10 @@ class Ball {
           }
           //console.log(object);
           // if(object.level == 0 && object.id != 0) matrix.bonusBlockUpdate(object);
-          // if(object.level == 0 && object.id != 0) {
-          balls.addNumber++;
-          matrix.bonusBlockUpdate(object);
+          if(object.level == 0 && object.id != 0) {
+            balls.addNumber++;
+            matrix.bonusBlockUpdate(object);
+          }
         }
       } else if (object.id == 1 && object.level == 1) {
         const minX = object.x - this.radius * 2;
@@ -283,34 +271,33 @@ class Balls {
     this.vy = 0;
     this.speed = 3.5;
     this.id = 0;
-    this.radius = 11;
     this.addNewBall(canvasWidth, canvasHeight, 1);
     this.addNumber = 0;
     this.startTime = 0;
   }
+
   draw(ctx, canvasWidth, canvasHeight, matrix, game, t) {
     if (this.state == 0) {
       ctx.fillStyle = "#fdd700";
       ctx.beginPath();
       ctx.arc(this.x, this.y, 10, 0, 2 * Math.PI);
       ctx.fill();
-      ctx.closePath();
     } else if (this.state == 1 || this.state == 2) {
       this.balls.forEach((ball) => {
         ball.draw(ctx, canvasWidth, canvasHeight, this, matrix, t);
       });
-    }
-    if (this.state == 2) {
-      ctx.fillStyle = "#fdd700";
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, 10, 0, 2 * Math.PI);
-      ctx.fill();
-      ctx.closePath();
-    }
-    if (this.balls.every((ball) => ball.state == 2) && this.state == 2) {
-      this.update();
-      this.addNewLine(game);
-      this.addNewBall(canvasWidth, canvasHeight, this.addNumber);
+      if (this.state == 2) {
+        ctx.fillStyle = "#fdd700";
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 10, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+      if (this.balls.every((ball) => ball.state == 2) && this.state == 2) {
+        this.update();
+        this.state = 0;
+        matrix.addNewLine(game);
+        this.addNewBall(canvasWidth, canvasHeight, this.addNumber);
+      }
     }
   }
 
@@ -319,16 +306,16 @@ class Balls {
     const deltaY = Math.round((offsetY - this.y - this.radius) * 1000) / 1000;
     let vx = 0;
     let vy = 0;
-    const theta = Math.atan2(deltaY, delta);
+    const theta = -Math.atan2(deltaY, delta);
     //console.log(theta);
-    if (theta >= -Math.PI / 2 && theta < 0) {
-      vx = Math.round(this.speed * 10 * Math.cos(theta)) / 10;
-      vy = Math.abs(Math.round(this.speed * 10 * Math.sin(theta)) / 10) * -1;
+    if (theta <= 0.17) {
+      vx = Math.round(this.speed * 10 * Math.cos(0.17) / 10);
+      vy = Math.abs(Math.round(this.speed * 10 * Math.sin(0.17)) / 10) * -1;
     } else if (theta >= 2.96) {
-      vx = Math.abs(Math.round(this.speed * 10 * Math.cos(2.96)) / 10);
+      vx = Math.round(this.speed * 10 * Math.cos(2.96)) / 10;
       vy = Math.abs(Math.round(this.speed * 10 * Math.sin(2.96)) / 10) * -1;
     } else {
-      vx = Math.abs(Math.round(this.speed * 100 * Math.cos(theta)) / 100);
+      vx = Math.round(this.speed * 100 * Math.cos(theta)) / 100;
       vy = Math.abs(Math.round(this.speed * 100 * Math.sin(theta)) / 100) * -1;
     }
     this.startTime = t;
@@ -385,7 +372,7 @@ class Block {
   draw(ctx, matrixLevel) {
     if (this.level > 0) {
       ctx.fillStyle = `rgba(255, 56, 78, ${
-        (1 / (matrixLevel - 1)) * this.level * (0.9 + 0.1)
+        (1 / (matrixLevel - 1)) * this.level * 0.9 + 0.1
       })`;
       ctx.strokeRoundedRect(
         ctx,
@@ -395,16 +382,12 @@ class Block {
         this.height - 4,
         5
       );
-      ctx.fillText(
-        `${this.level}`,
-        this.x + this.width / 2,
-        this.y + this.height / 2
-      );
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
+      ctx.font = "17.5px BM YEONSUNG OTF";
       ctx.fillStyle = "#ffffff";
+      ctx.textBaseline = "middle";
+      ctx.textAlign = "center";
       ctx.fillText(
-        `${this.level}`,
+        this.level,
         this.x + this.width / 2,
         this.y + this.height / 2
       );
@@ -415,9 +398,9 @@ class Block {
         this.maxLevel,
         this.id
       );
-      this.particles.draw(ctx);
+      this.level -= 1;
     } else if (this.level == -1) {
-      this.level = -2;
+      this.particles.draw(ctx);
       if (this.particles.state == -1) this.level = -2;
     }
   }
@@ -429,14 +412,14 @@ class Block {
     ctx.arcTo(x + width, y + height, x, y + height, radius);
     ctx.arcTo(x, y + height, x, y, radius);
     ctx.arcTo(x, y, x + width, y, radius);
-    ctx.closePath();
     ctx.fill();
+    ctx.closePath();
   }
 }
 
 class BonusBlock {
   constructor(xId, level, id) {
-    this.id = id / 12 / 2 - 4;
+    this.id = id; // 2~4
     this.xId = xId;
     this.yId = 0;
     this.x = this.xId * 100;
@@ -463,7 +446,7 @@ class BonusBlock {
       //     (1 / (matrixLevel - 1)) * this.level * (0.9 + 0.1)
       //   })`;
       ctx.strokeStyle = `rgba(255, 56, 78, ${
-        (1 / (matrixLevel - 1)) * this.level * (0.9 + 0.1)
+        (1 / (matrixLevel - 1)) * this.level * 0.9 + 0.1
       })`;
       ctx.lineWidth = 4;
       ctx.stroke();
@@ -480,6 +463,7 @@ class BonusBlock {
       ctx.fillStyle = "rgb(50, 177, 108)";
       ctx.fill();
       ctx.closePath();
+
       this.fillBonusLine(
         ctx,
         this.x + 2,
@@ -488,19 +472,14 @@ class BonusBlock {
         this.height - 4,
         matrixLevel
       );
+      ctx.font = "17.5px BM YEONSUNG OTF";
       ctx.fillStyle = "#ffffff";
       ctx.textBaseline = "middle";
-      ctx.fillText(
-        `${this.level}`,
-        this.x + this.width / 2,
-        this.y + this.height / 2
-      );
       ctx.textAlign = "center";
       ctx.fillText(
         this.level,
         this.x + this.width / 2,
-        this,
-        y + this.height / 2
+        this.y + this.height / 2
       );
     } else if (this.level == 0) {
       this.particles = new Particles(
@@ -523,14 +502,12 @@ class BonusBlock {
     ctx.arcTo(x + width, y + height, x, y + height, radius);
     ctx.arcTo(x, y + height, x, y, radius);
     ctx.arcTo(x, y, x + width, y, radius);
-    ctx.closePath();
-    ctx.fill();
   }
 
   fillBonusLine(ctx, x, y, width, height, matrixLevel) {
     const lineWidth = 8;
     ctx.fillStyle = `rgba(255, 56, 78, ${
-      (1 / (matrixLevel - 1)) * this.level * (0.9 + 0.1)
+      (1 / (matrixLevel - 1)) * this.level * 0.9 + 0.1
     })`;
     if (this.id != 3) {
       ctx.fillRect(x + 4, y + height / 2 - lineWidth / 2, width - 8, lineWidth);
@@ -829,7 +806,7 @@ class Game {
     this.bord = localStorage.getItem("bord")
       ? JSON.parse(this.__(JSON.parse(localStorage.getItem("bord"))))
       : [];
-    this.highScore = this.bord ? this.bord[0].score : 0;
+    this.highScore = this.bord == true ? this.bord[0].score : 0;
   }
 
   drawStartMenu(ctx, canvasWidth, canvasHeight, t) {
@@ -860,7 +837,7 @@ class Game {
     ctx.shadowOffsetY = 1;
     ctx.font = "15px BM YEONSUNG OTF";
     ctx.fillText(script[3], canvasWidth / 2, canvasHeight / 2 + 175);
-    ctx.fontSize += Math.sin(5 / 15) * 0.2;
+    this.fontSize += Math.sin(t / 15) * 0.2;
     ctx.font = `${this.fontSize}px BM YEONSUNG OTF`;
     ctx.fillText(script[4], canvasWidth / 2, canvasHeight / 2 + 250);
     ctx.fillText(script[5], canvasWidth / 2, canvasHeight / 2 + 275);
@@ -966,7 +943,7 @@ class Game {
     let img = new Image();
     // img.src = "./asset/manual.png";
     img.src = "./asset/tmp.png";
-    ctx.drawlmage(img, 0, 0, 600, 800);
+    ctx.drawImage(img, 0, 0, 600, 800);
   }
 
   encodeArray(array) {
