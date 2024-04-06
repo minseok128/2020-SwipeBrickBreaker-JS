@@ -828,8 +828,8 @@ class Game {
 
     ctx.fillStyle = "#000000";
     let img = new Image();
-    // img.src = "./asset/SBB.png";
-    img.src = "./asset/tmp.png";
+    img.src = "./asset/SBB.png";
+    // img.src = "./asset/tmp.png";
     ctx.drawImage(img, 0, 0);
 
     ctx.font = "100px BM YEONSUNG OTF";
