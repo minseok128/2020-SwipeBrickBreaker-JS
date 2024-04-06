@@ -946,8 +946,8 @@ class Game {
   drawManual(ctx) {
     ctx.fillStyle = "#000000";
     let img = new Image();
-    // img.src = "./asset/manual.png";
-    img.src = "./asset/tmp.png";
+    img.src = "./asset/manual.png";
+    // img.src = "./asset/tmp.png";
     ctx.drawImage(img, 0, 0, 600, 800);
   }
 
