@@ -7,7 +7,9 @@
 </div>
 
 ## How to play
-## [Play the game](https://minseok128.github.io/2020-SwipeBrickBreaker-JS/)
+### [Play](https://minseok128.github.io/2020-SwipeBrickBreaker-JS/)
+### [Play](https://minseok128.github.io/2020-SwipeBrickBreaker-JS/)
+### [Play](https://minseok128.github.io/2020-SwipeBrickBreaker-JS/)
 ```bash
 git clone https://github.com/minseok128/2020-SwipeBrickBreaker-JS
 cd 2020-SwipeBrickBreaker-JS
