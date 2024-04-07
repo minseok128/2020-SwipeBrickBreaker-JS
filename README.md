@@ -1,6 +1,6 @@
 # Swipe Brick Breaker from 2020
 
-## [Play the game]()
+## [Play the game](https://minseok128.github.io/2020-SwipeBrickBreaker-JS/)
 
 <div>
 	<image src="./readme/title_img.png" width=400 />
@@ -15,6 +15,11 @@ open index.html
 
 # or double click index.html
 ```
+
+> <div>
+> 	<image src="./readme/play1.gif" width=400 />
+> 	<image src="./readme/play2.gif" width=400 />
+> </div>
 
 ## 이게 뭐죠?
 때는 **2020년**, 공군 일병었던 20살의 나는 본부직할의 어느 한 부대에서 행정직을 수행하고 있었다.
