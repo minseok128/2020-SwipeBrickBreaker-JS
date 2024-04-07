@@ -11,9 +11,9 @@
 ```bash
 git clone https://github.com/minseok128/2020-SwipeBrickBreaker-JS
 cd 2020-SwipeBrickBreaker-JS
-open BrickBreaker.html
+open index.html
 
-# or double click BrickBreaker.html
+# or double click index.html
 ```
 
 ## 이게 뭐죠?
