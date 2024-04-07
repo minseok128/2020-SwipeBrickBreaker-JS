@@ -19,7 +19,7 @@ open index.html
 ```
 
 > <div>
-> 	<image src="./readme/play1.gif" width=300 />
+> 	<image src="./readme/play3.gif" width=300 />
 > 	<image src="./readme/play2.gif" width=300 />
 > </div>
 
@@ -75,7 +75,7 @@ open index.html
 
 전역을 하고 난 이후에도 해당 게임은 널리 널리 퍼져 나갔던 것 같다. 후임으로부터 해당 게임의 캡처 이미지가 공군본부 인트라넷 홈페이지 공지사항에 `근무 중 부적절한 프로그램 사용 금지`라는 타이틀과 함께 올라왔다는 소식을 듣게 되었다. 결국, 어떤 식으로든 작은 꿈이 이루어졌음을 알 수 있었다. 그리고 전역했다는 사실에 밀려오는 **안도감!!**
 
-> <image src="./readme/play3.gif" width=400 />
+> <image src="./readme/play1.gif" width=400 />
 > 
 > 희망 발사!
 
