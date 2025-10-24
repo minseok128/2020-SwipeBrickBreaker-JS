@@ -10,6 +10,17 @@ import { EventBus } from '@events/EventBus.js';
 import { CanvasRenderer } from '@rendering/CanvasRenderer.js';
 import { InputManager } from '@input/InputManager.js';
 import { WorldManager } from '@physics/WorldManager.js';
+import { StateManager } from '@/state/StateManager.js';
+import { MenuState } from '@/state/states/MenuState.js';
+
+// Import systems
+import { PhysicsSystem } from '@systems/PhysicsSystem.js';
+import { CollisionSystem } from '@systems/CollisionSystem.js';
+import { RenderSystem } from '@systems/RenderSystem.js';
+import { BallSystem } from '@systems/BallSystem.js';
+import { BlockSystem } from '@systems/BlockSystem.js';
+import { ParticleSystem } from '@systems/ParticleSystem.js';
+import { LifecycleSystem } from '@systems/LifecycleSystem.js';
 
 export class Engine {
   /**
@@ -19,6 +30,7 @@ export class Engine {
     // Core managers
     this.entityManager = new EntityManager();
     this.systemManager = new SystemManager();
+    this.stateManager = new StateManager(this);
 
     // Subsystems
     this.eventBus = new EventBus();
@@ -29,11 +41,26 @@ export class Engine {
     // Game loop
     this.gameLoop = new GameLoop(this.update.bind(this), this.render.bind(this));
 
-    // State (will be managed by StateManager in future phases)
+    // State
     this.running = false;
 
     // Setup
+    this.setupSystems();
     this.setupInput();
+  }
+
+  /**
+   * Setup all game systems
+   */
+  setupSystems() {
+    // Add systems in priority order
+    this.systemManager.addSystem(new PhysicsSystem(this.physics.world));
+    this.systemManager.addSystem(new CollisionSystem(this.physics.world, this.eventBus));
+    this.systemManager.addSystem(new BallSystem(this.eventBus));
+    this.systemManager.addSystem(new BlockSystem(this.physics.world, this.eventBus));
+    this.systemManager.addSystem(new ParticleSystem());
+    this.systemManager.addSystem(new LifecycleSystem(this.physics.world));
+    this.systemManager.addSystem(new RenderSystem(this.renderer));
   }
 
   /**
@@ -49,9 +76,7 @@ export class Engine {
    * @param {string} key
    */
   handleKeyDown(key) {
-    // State-specific input handling will be added in Phase 5
-    // For now, just emit to event bus
-    this.eventBus.emit('input:keydown', key);
+    this.stateManager.handleInput({ type: 'keydown', key });
   }
 
   /**
@@ -59,8 +84,7 @@ export class Engine {
    * @param {Object} data
    */
   handleMouseDown(data) {
-    // State-specific input handling will be added in Phase 5
-    this.eventBus.emit('input:mousedown', data);
+    this.stateManager.handleInput({ type: 'mousedown', ...data });
   }
 
   /**
@@ -73,6 +97,9 @@ export class Engine {
 
     // Initialize systems
     this.systemManager.init(this);
+
+    // Initialize state manager with menu state
+    this.stateManager.init(new MenuState());
 
     // Start game loop
     this.gameLoop.start();
@@ -93,10 +120,10 @@ export class Engine {
    * @param {number} deltaTime - Frame time (ms)
    */
   update(deltaTime) {
-    // Update physics
-    this.physics.step(deltaTime);
+    // Update state
+    this.stateManager.update(deltaTime);
 
-    // Update systems
+    // Update systems (physics system handles Box2D step)
     const entities = this.entityManager.getAllActive();
     this.systemManager.update(entities, deltaTime);
 
@@ -115,21 +142,14 @@ export class Engine {
     // Render background
     this.renderer.drawRect(0, 0, 600, 700, '#161e38');
 
-    // Render entities (systems will handle this in Phase 4)
-    // For now, just show a test message
-    this.renderer.drawText('Swipe Brick Breaker 2.0', 300, 350, {
-      font: '40px BM YEONSUNG OTF',
-      color: '#fdd700',
-    });
+    // Render state (includes entity rendering via RenderSystem)
+    this.stateManager.render(this.renderer, alpha);
 
-    this.renderer.drawText('Engine Initialized', 300, 400, {
-      font: '20px BM YEONSUNG OTF',
-      color: '#ffffff',
-    });
-
-    this.renderer.drawText(`FPS: ${this.gameLoop.getFPS()}`, 300, 450, {
+    // Show FPS for debugging
+    this.renderer.drawText(`FPS: ${this.gameLoop.getFPS()}`, 550, 20, {
       font: '15px BM YEONSUNG OTF',
       color: '#ffffff',
+      align: 'right',
     });
   }
 
@@ -138,6 +158,7 @@ export class Engine {
    */
   cleanup() {
     this.stop();
+    this.stateManager.cleanup();
     this.systemManager.cleanup();
     this.entityManager.clear();
     this.input.cleanup();

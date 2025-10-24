@@ -12,6 +12,7 @@ export default defineConfig({
       '@core': path.resolve(__dirname, './src/core'),
       '@components': path.resolve(__dirname, './src/components'),
       '@systems': path.resolve(__dirname, './src/systems'),
+      '@factories': path.resolve(__dirname, './src/factories'),
       '@config': path.resolve(__dirname, './src/config'),
       '@state': path.resolve(__dirname, './src/state'),
       '@rendering': path.resolve(__dirname, './src/rendering'),
