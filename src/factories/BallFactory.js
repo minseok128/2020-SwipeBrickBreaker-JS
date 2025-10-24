@@ -71,11 +71,24 @@ export class BallFactory {
    * @param {number} speed - Speed magnitude
    */
   static launch(ballEntity, angle, speed = BALL.INITIAL_SPEED) {
-    // Clamp angle to valid range
-    angle = Math.max(BALL.MIN_LAUNCH_ANGLE, Math.min(BALL.MAX_LAUNCH_ANGLE, angle));
+    // Calculate velocity with legacy-compatible rounding
+    // (matches legacy app.js lines 317-326)
+    let vx = 0;
+    let vy = 0;
 
-    const vx = Math.cos(angle) * speed;
-    const vy = Math.sin(angle) * speed;
+    if (angle <= BALL.MIN_LAUNCH_ANGLE) {
+      // Use MIN_LAUNCH_ANGLE with precision 10
+      vx = Math.round(speed * 10 * Math.cos(BALL.MIN_LAUNCH_ANGLE)) / 10;
+      vy = Math.abs(Math.round(speed * 10 * Math.sin(BALL.MIN_LAUNCH_ANGLE)) / 10) * -1;
+    } else if (angle >= BALL.MAX_LAUNCH_ANGLE) {
+      // Use MAX_LAUNCH_ANGLE with precision 10
+      vx = Math.round(speed * 10 * Math.cos(BALL.MAX_LAUNCH_ANGLE)) / 10;
+      vy = Math.abs(Math.round(speed * 10 * Math.sin(BALL.MAX_LAUNCH_ANGLE)) / 10) * -1;
+    } else {
+      // Use actual angle with precision 100
+      vx = Math.round(speed * 100 * Math.cos(angle)) / 100;
+      vy = Math.abs(Math.round(speed * 100 * Math.sin(angle)) / 100) * -1;
+    }
 
     // Set velocity in components
     const velComp = ballEntity.getComponent('velocity');

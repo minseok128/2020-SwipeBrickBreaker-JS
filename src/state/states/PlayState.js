@@ -272,13 +272,13 @@ export class PlayState extends GameState {
    * @param {number} targetY
    */
   launchBalls(engine, targetX, targetY) {
-    // Calculate angle
-    const dx = targetX - this.landingX;
-    const dy = targetY - this.landingY;
-    let angle = Math.atan2(dy, dx);
+    // Calculate angle (legacy compatible)
+    // Legacy: theta = -Math.atan2(deltaY, delta)
+    const delta = Math.round((targetX - this.landingX) * 1000) / 1000;
+    const deltaY = Math.round((targetY - this.landingY - BALL.RADIUS) * 1000) / 1000;
+    const angle = -Math.atan2(deltaY, delta);  // Note: NEGATIVE to match legacy
 
-    // Clamp angle to valid range
-    angle = Math.max(BALL.MIN_LAUNCH_ANGLE, Math.min(BALL.MAX_LAUNCH_ANGLE, angle));
+    // Angle clamping is handled in BallFactory.launch()
 
     // Launch all balls
     const balls = engine.entityManager.getEntitiesWithTag('ball');
