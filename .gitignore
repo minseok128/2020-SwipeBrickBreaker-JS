@@ -1,0 +1,37 @@
+# Dependencies
+node_modules
+package-lock.json
+
+# Build output
+dist
+*.local
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test coverage
+coverage
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
