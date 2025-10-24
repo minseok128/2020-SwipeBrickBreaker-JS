@@ -16,12 +16,31 @@ export const GRID = {
 };
 
 export const BALL = {
+  // Physical radius for collision detection (Box2D)
   RADIUS: 11,
-  INITIAL_SPEED: 3.5,
+
+  // Visual radius for rendering
+  VISUAL_RADIUS_WAITING: 10,  // Smaller when waiting/landed (legacy behavior)
+  VISUAL_RADIUS_ACTIVE: 11,   // Full size when active
+
+  INITIAL_SPEED: 7.0,  // 2x speed (original: 3.5)
   LAUNCH_DELAY_FRAMES: 6,
   COLOR: '#fdd700',
   MIN_LAUNCH_ANGLE: 0.17, // radians (~10°)
   MAX_LAUNCH_ANGLE: 2.96, // radians (~170°)
+
+  // Velocity correction to prevent shallow angles
+  MIN_Y_VELOCITY: 1.5, // Minimum downward velocity after collision (prevents infinite horizontal bouncing)
+
+  // Y position calculations (based on CANVAS.HEIGHT = 700)
+  // Initial position: center at 689 → bottom at 700 (touching floor)
+  INITIAL_Y: 689,  // CANVAS.HEIGHT - RADIUS (700 - 11)
+
+  // Waiting position after landing: center at 688 → bottom at 698 with radius 10 (2px above floor)
+  WAITING_Y: 688,  // CANVAS.HEIGHT - RADIUS - 1 (700 - 12)
+
+  // Landing threshold: detect when ball center reaches this Y
+  LANDING_Y: 689,  // CANVAS.HEIGHT - RADIUS (700 - 11)
 };
 
 export const BLOCK = {

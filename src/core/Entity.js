@@ -5,9 +5,11 @@
 export class Entity {
   /**
    * @param {number} id - Unique identifier
+   * @param {EntityManager} manager - Reference to entity manager
    */
-  constructor(id) {
+  constructor(id, manager = null) {
     this.id = id;
+    this.manager = manager;
     this.components = new Map();
     this.active = true;
   }
@@ -75,9 +77,12 @@ export class Entity {
   }
 
   /**
-   * Destroy entity (mark as inactive)
+   * Destroy entity (mark as inactive and schedule removal)
    */
   destroy() {
     this.active = false;
+    if (this.manager) {
+      this.manager.removeEntity(this);
+    }
   }
 }

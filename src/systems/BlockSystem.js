@@ -23,6 +23,7 @@ export class BlockSystem extends System {
     this.eventBus = eventBus;
     this.currentLevel = 1;
     this.currentStage = 0;
+    this.randomArray = DIFFICULTY_TABLES[0]; // Start with stage 0
   }
 
   /**
@@ -56,16 +57,17 @@ export class BlockSystem extends System {
     const row = 0; // Always generate at top
     const health = this.calculateBlockHealth(level);
 
-    // Determine block count (1-5 blocks randomly)
-    const blockCount = Math.floor(Math.random() * 5) + 1;
+    // Determine block count based on difficulty table (legacy logic)
+    const difficultyIndex = Math.floor(Math.random() * 21); // 0-20
+    const blockCount = this.randomArray[difficultyIndex] + 1;
     const positions = this.getRandomPositions(GRID.COLS, blockCount);
 
-    // Determine if any block is bonus
-    const bonusIndex = Math.random() < 0.15 ? Math.floor(Math.random() * blockCount) : -1;
+    // ALWAYS create exactly ONE bonus block per round (legacy logic)
+    const bonusIndex = Math.floor(Math.random() * blockCount);
     let bonusType = BLOCK_TYPE.BONUS_BALL;
 
-    // Higher level bonus types
-    if (level >= 11 && Math.random() < 0.3) {
+    // Special bonus types ONLY on levels that are multiples of 10 (legacy: level % 10 == 0)
+    if (level % 10 === 0) {
       const types = [BLOCK_TYPE.BONUS_CROSS, BLOCK_TYPE.BONUS_HORIZONTAL, BLOCK_TYPE.BONUS_VERTICAL];
       bonusType = types[Math.floor(Math.random() * types.length)];
     }
@@ -77,7 +79,8 @@ export class BlockSystem extends System {
       if (i === bonusIndex) {
         // Create bonus block
         if (bonusType === BLOCK_TYPE.BONUS_BALL) {
-          BlockFactory.createBonusBall(this.entityManager, this.world, col, row, health);
+          // Legacy: Bonus ball has no health, just a static collectible
+          BlockFactory.createBonusBall(this.entityManager, this.world, col, row);
         } else {
           BlockFactory.createBonusPattern(
             this.entityManager,
@@ -99,17 +102,24 @@ export class BlockSystem extends System {
 
   /**
    * Shift all blocks down by one row
+   * Legacy: Bonus items also shift down with blocks
    * @returns {boolean} - True if any block reached bottom (game over)
    */
   shiftBlocksDown() {
-    const blocks = this.entityManager.getEntitiesWithTag('block');
+    // Only get ACTIVE blocks (visible on screen)
+    const allBlocks = this.entityManager.getEntitiesWithTag('block');
+    const blocks = allBlocks.filter(b => b.active);
+    const bonuses = this.entityManager.getEntitiesWithTag('bonus');
     let gameOver = false;
 
+    // Count blocks by row and check for game over
+    // Note: blocks array already filtered to active only
     for (const block of blocks) {
       const blockComp = block.getComponent('block');
       if (!blockComp) continue;
 
-      // Check if block will reach bottom row
+      // Check if block will go BEYOND the screen after shifting
+      // If current gridY is at the last row (12), shifting would move it off-screen (13)
       if (blockComp.gridY >= GRID.ROWS - 1) {
         gameOver = true;
       }
@@ -118,25 +128,55 @@ export class BlockSystem extends System {
       BlockFactory.shiftDown(block);
     }
 
+    // Shift bonus items down (legacy behavior)
+    for (const bonus of bonuses) {
+      const blockComp = bonus.getComponent('block');
+      if (!blockComp) continue;
+
+      // Check if bonus reached bottom row (collect it)
+      if (blockComp.gridY >= GRID.ROWS - 1) {
+        this.collectBonus(bonus);
+      } else {
+        // Shift down
+        BlockFactory.shiftDown(bonus);
+      }
+    }
+
     this.eventBus.emit('blocks:shifted_down', { gameOver });
 
     return gameOver;
   }
 
   /**
+   * Collect bonus at bottom row (legacy behavior)
+   * @param {Entity} bonus
+   */
+  collectBonus(bonus) {
+    const bonusComp = bonus.getComponent('bonus');
+    if (!bonusComp || bonusComp.isCollected()) return;
+
+    // Mark as collected
+    bonusComp.collect();
+
+    // Emit collection event
+    this.eventBus.emit('bonus:collected', {
+      bonusType: bonusComp.bonusType,
+      value: bonusComp.getValue(),
+    });
+
+    // Remove bonus entity
+    bonus.destroy();
+  }
+
+  /**
    * Calculate block health based on level
+   * Legacy: Block health equals game level directly
    * @param {number} level
    * @returns {number}
    */
   calculateBlockHealth(level) {
-    // Use difficulty tables
-    const table = DIFFICULTY_TABLES[this.currentStage];
-    if (!table) return level; // Fallback
-
-    const index = Math.min(level - 1, table.length - 1);
-    const multiplier = table[index];
-
-    return level * multiplier;
+    // Legacy behavior: block health = game level
+    return level;
   }
 
   /**
@@ -147,10 +187,12 @@ export class BlockSystem extends System {
     for (let i = STAGE_THRESHOLDS.length - 1; i >= 0; i--) {
       if (level >= STAGE_THRESHOLDS[i]) {
         this.currentStage = i + 1;
+        this.randomArray = DIFFICULTY_TABLES[this.currentStage]; // Update difficulty table
         return;
       }
     }
     this.currentStage = 0;
+    this.randomArray = DIFFICULTY_TABLES[0]; // Reset to stage 0
   }
 
   /**
@@ -178,11 +220,16 @@ export class BlockSystem extends System {
    */
   checkGameOver(blocks) {
     for (const block of blocks) {
+      // Skip destroyed blocks (active=false, pending cleanup)
+      if (!block.active) continue;
+
       const blockComp = block.getComponent('block');
       if (!blockComp) continue;
 
-      // Check if any block reached bottom row
-      if (blockComp.gridY >= GRID.ROWS - 1) {
+      // Check if any block went BEYOND the bottom row (screen boundary)
+      // GRID.ROWS = 13, so valid rows are 0-12
+      // Game over when gridY > 12 (trying to go to row 13, which is off-screen)
+      if (blockComp.gridY > GRID.ROWS - 1) {
         this.eventBus.emit('game:over', { reason: 'blocks_reached_bottom' });
         return;
       }
@@ -204,6 +251,7 @@ export class BlockSystem extends System {
       block.destroy();
     }
 
+    // Force cleanup to remove inactive entities
     this.entityManager.cleanup();
   }
 

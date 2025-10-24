@@ -16,7 +16,8 @@ export class PlayState extends GameState {
     this.gameStarted = false;
     this.ballsLanded = false;
     this.landingX = CANVAS.WIDTH / 2;
-    this.landingY = CANVAS.HEIGHT - BALL.RADIUS;
+    // Initial position: ball center so that bottom touches floor
+    this.landingY = BALL.INITIAL_Y; // 689 = 700 - 11
   }
 
   /**
@@ -48,7 +49,8 @@ export class PlayState extends GameState {
     this.gameStarted = false;
     this.ballsLanded = false;
     this.landingX = CANVAS.WIDTH / 2;
-    this.landingY = CANVAS.HEIGHT - BALL.RADIUS;
+    // Initial position: ball center so that bottom touches floor
+    this.landingY = BALL.INITIAL_Y; // 689 = 700 - 11
 
     // Create initial balls
     this.createBalls(engine);
@@ -112,6 +114,9 @@ export class PlayState extends GameState {
   handleAllBallsLanded(engine, data) {
     this.ballsLanded = true;
     this.landingX = data.landingX;
+    // Update to waiting position: ball center at 688 for next turn
+    // (with visual radius 10, bottom at 698, 2px above floor)
+    this.landingY = BALL.WAITING_Y; // 688 = 700 - 12
 
     // Shift blocks down
     const blockSystem = this.getBlockSystem(engine);

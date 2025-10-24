@@ -150,7 +150,14 @@ export class Engine {
     // Render background
     this.renderer.drawRect(0, 0, 600, 700, '#161e38');
 
-    // Render state (includes entity rendering via RenderSystem)
+    // Render entities via RenderSystem
+    const entities = this.entityManager.getAllActive();
+    const renderSystem = this.systemManager.systems.find(s => s.constructor.name === 'RenderSystem');
+    if (renderSystem) {
+      renderSystem.process(entities, 0);
+    }
+
+    // Render state UI on top
     this.stateManager.render(this.renderer, alpha);
 
     // Show performance metrics for debugging

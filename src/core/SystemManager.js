@@ -37,13 +37,14 @@ export class SystemManager {
   }
 
   /**
-   * Update all systems
+   * Update all systems (excluding RenderSystem)
    * @param {Entity[]} entities
    * @param {number} deltaTime
    */
   update(entities, deltaTime) {
     this.systems.forEach(system => {
-      if (system.enabled) {
+      // RenderSystem is called separately in Engine.render()
+      if (system.enabled && system.constructor.name !== 'RenderSystem') {
         system.update(entities, deltaTime);
       }
     });

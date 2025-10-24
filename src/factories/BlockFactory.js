@@ -29,16 +29,15 @@ export class BlockFactory {
   static createNormal(entityManager, world, gridX, gridY, health) {
     const x = gridX * GRID.CELL_WIDTH;
     const y = gridY * GRID.CELL_HEIGHT;
+    const centerX = x + BLOCK.WIDTH / 2;
+    const centerY = y + BLOCK.HEIGHT / 2;
 
     const entity = entityManager.createEntity();
 
     // Create Box2D static body
     const body = world.createBody({
       type: 'static',
-      position: Vec2(
-        (x + BLOCK.WIDTH / 2) / PHYSICS_SCALE,
-        (y + BLOCK.HEIGHT / 2) / PHYSICS_SCALE
-      ),
+      position: Vec2(centerX / PHYSICS_SCALE, centerY / PHYSICS_SCALE),
     });
 
     body.createFixture({
@@ -51,12 +50,12 @@ export class BlockFactory {
 
     body.setUserData({ entityId: entity.id, type: 'block' });
 
-    // Add components
+    // Add components (use center position for consistency with physics)
     const healthComp = new HealthComponent(health);
     const opacity = healthComp.getOpacity(BLOCK.OPACITY_MIN, BLOCK.OPACITY_MAX);
 
     entity
-      .addComponent(new PositionComponent(x, y))
+      .addComponent(new PositionComponent(centerX, centerY))
       .addComponent(
         new SpriteComponent('rect', BLOCK.COLOR, { width: BLOCK.WIDTH, height: BLOCK.HEIGHT }, 1)
       )
@@ -73,62 +72,38 @@ export class BlockFactory {
   }
 
   /**
-   * Create a bonus block (ball bonus)
+   * Create a bonus block (ball bonus) - Legacy: static bonus that moves with blocks
+   * Legacy: Bonus doesn't get destroyed by balls, collected only at bottom row
    * @param {EntityManager} entityManager
-   * @param {planck.World} world
+   * @param {planck.World} _world - Not used (bonus has no physics body)
    * @param {number} gridX
    * @param {number} gridY
-   * @param {number} health
    * @returns {Entity}
    */
-  static createBonusBall(entityManager, world, gridX, gridY, health) {
+  static createBonusBall(entityManager, _world, gridX, gridY) {
     const x = gridX * GRID.CELL_WIDTH;
     const y = gridY * GRID.CELL_HEIGHT;
+    const centerX = x + BLOCK.WIDTH / 2;
+    const centerY = y + BLOCK.HEIGHT / 2;
 
     const entity = entityManager.createEntity();
 
-    // Create Box2D body
-    const body = world.createBody({
-      type: 'static',
-      position: Vec2(
-        (x + BLOCK.WIDTH / 2) / PHYSICS_SCALE,
-        (y + BLOCK.HEIGHT / 2) / PHYSICS_SCALE
-      ),
-    });
-
-    body.createFixture({
-      shape: Box(BLOCK.WIDTH / 2 / PHYSICS_SCALE, BLOCK.HEIGHT / 2 / PHYSICS_SCALE),
-      friction: 0.0,
-      restitution: 1.0,
-      filterCategoryBits: COLLISION_LAYERS.BLOCK,
-      filterMaskBits: COLLISION_LAYERS.BALL,
-    });
-
-    body.setUserData({ entityId: entity.id, type: 'block' });
-
-    // Bonus blocks have higher health
-    const bonusHealth = Math.ceil(health * BONUS.HEALTH_MULTIPLIER);
-    const healthComp = new HealthComponent(bonusHealth);
-    const opacity = healthComp.getOpacity(BLOCK.OPACITY_MIN, BLOCK.OPACITY_MAX);
+    // Legacy: Bonus has NO collision with balls (balls pass through)
+    // No Box2D body needed
 
     entity
-      .addComponent(new PositionComponent(x, y))
+      .addComponent(new PositionComponent(centerX, centerY))
       .addComponent(
         new SpriteComponent(
-          'rect',
+          'circle',
           BONUS.COLOR,
-          { width: BLOCK.WIDTH, height: BLOCK.HEIGHT },
+          BONUS.RADIUS,
           1
         )
       )
-      .addComponent(new BodyComponent(body))
-      .addComponent(healthComp)
       .addComponent(new BlockComponent(BLOCK_TYPE.BONUS_BALL, gridX, gridY))
       .addComponent(new BonusComponent('extra_ball', 1))
-      .addComponent(new TagComponent('block'));
-
-    const sprite = entity.getComponent('sprite');
-    sprite.setOpacity(opacity);
+      .addComponent(new TagComponent('bonus'));
 
     return entity;
   }
@@ -146,16 +121,15 @@ export class BlockFactory {
   static createBonusPattern(entityManager, world, gridX, gridY, health, bonusType) {
     const x = gridX * GRID.CELL_WIDTH;
     const y = gridY * GRID.CELL_HEIGHT;
+    const centerX = x + BLOCK.WIDTH / 2;
+    const centerY = y + BLOCK.HEIGHT / 2;
 
     const entity = entityManager.createEntity();
 
     // Create Box2D body
     const body = world.createBody({
       type: 'static',
-      position: Vec2(
-        (x + BLOCK.WIDTH / 2) / PHYSICS_SCALE,
-        (y + BLOCK.HEIGHT / 2) / PHYSICS_SCALE
-      ),
+      position: Vec2(centerX / PHYSICS_SCALE, centerY / PHYSICS_SCALE),
     });
 
     body.createFixture({
@@ -173,7 +147,7 @@ export class BlockFactory {
     const opacity = healthComp.getOpacity(BLOCK.OPACITY_MIN, BLOCK.OPACITY_MAX);
 
     entity
-      .addComponent(new PositionComponent(x, y))
+      .addComponent(new PositionComponent(centerX, centerY))
       .addComponent(
         new SpriteComponent(
           'rect',
@@ -219,13 +193,14 @@ export class BlockFactory {
     if (block && pos) {
       block.shiftDown();
       const newY = block.gridY * GRID.CELL_HEIGHT;
-      pos.y = newY;
+      const newCenterY = newY + BLOCK.HEIGHT / 2;
+      pos.y = newCenterY;
 
       // Update Box2D body position
       if (bodyComp?.body) {
         const currentPos = bodyComp.body.getPosition();
         bodyComp.body.setPosition(
-          Vec2(currentPos.x, (newY + BLOCK.HEIGHT / 2) / PHYSICS_SCALE)
+          Vec2(currentPos.x, newCenterY / PHYSICS_SCALE)
         );
       }
     }

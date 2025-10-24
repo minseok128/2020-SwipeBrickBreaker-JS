@@ -54,13 +54,20 @@ export class HealthComponent {
   }
 
   /**
-   * Get opacity based on health percentage
+   * Get opacity based on health (legacy formula)
+   * Legacy: opacity = (current / (max - 1)) * 0.9 + 0.1
    * @param {number} min - Minimum opacity
    * @param {number} max - Maximum opacity
    * @returns {number}
    */
   getOpacity(min = 0.1, max = 0.9) {
-    const percentage = this.getPercentage();
-    return min + (max - min) * percentage;
+    // Legacy formula: (current / (max - 1)) * 0.9 + 0.1
+    // Handle edge case where max <= 1
+    if (this.max <= 1) {
+      return 1.0; // Full opacity for single-hit blocks
+    }
+
+    const opacity = (this.current / (this.max - 1)) * 0.9 + 0.1;
+    return Math.min(1.0, Math.max(min, opacity));
   }
 }

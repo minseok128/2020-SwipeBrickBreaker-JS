@@ -5,6 +5,7 @@
 
 import planck from 'planck-js';
 import { CANVAS, PHYSICS } from '@config/constants.js';
+import { COLLISION_LAYERS } from '@config/layers.js';
 
 export class WorldManager {
   constructor() {
@@ -62,6 +63,8 @@ export class WorldManager {
       shape: planck.Box(width / 2 / this.scale, height / 2 / this.scale),
       friction: 0.0,
       restitution: 1.0, // Perfect elasticity
+      filterCategoryBits: COLLISION_LAYERS.WALL,
+      filterMaskBits: COLLISION_LAYERS.BALL,
     });
 
     body.setUserData({ type: 'wall', name });

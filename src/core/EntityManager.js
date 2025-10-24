@@ -17,7 +17,7 @@ export class EntityManager {
    * @returns {Entity}
    */
   createEntity() {
-    const entity = new Entity(this.nextId++);
+    const entity = new Entity(this.nextId++, this);
     this.entities.add(entity);
     return entity;
   }

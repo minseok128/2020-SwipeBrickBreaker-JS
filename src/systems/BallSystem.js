@@ -49,14 +49,18 @@ export class BallSystem extends System {
     // Waiting → Active (delayed spawn)
     if (ballComp.isWaiting()) {
       if (ballComp.isReadyToLaunch(this.gameTime, BALL.LAUNCH_DELAY_FRAMES)) {
-        lifecycle.setState('active');
+        // Get stored launch parameters
+        const { angle, speed } = ballComp.getLaunchParams();
+        // Actually launch the ball now
+        BallFactory.launch(ball, angle, speed);
       }
     }
 
     // Active → Check for landing
     if (ballComp.isActive()) {
-      // Check if ball reached bottom
-      if (pos.y >= CANVAS.HEIGHT - BALL.RADIUS) {
+      // Check if ball center reached landing threshold
+      // When y >= 689, ball bottom (689+11=700) touches floor
+      if (pos.y >= BALL.LANDING_Y) {
         this.landBall(ball);
       }
     }
@@ -79,8 +83,9 @@ export class BallSystem extends System {
       bodyComp.body.setAwake(false);
     }
 
-    // Set landed position
-    pos.y = CANVAS.HEIGHT - BALL.RADIUS;
+    // Set waiting position for visual clarity
+    // Center at 688 → with radius 11, bottom at 699 (1px above floor)
+    pos.y = BALL.WAITING_Y;
 
     // Record landing X (first ball sets the position)
     if (this.landingX === null) {
@@ -113,6 +118,18 @@ export class BallSystem extends System {
    * @param {Entity[]} balls
    */
   checkAllBallsLanded(balls) {
+    // Check for INACTIVE balls (game hasn't started yet)
+    const inactiveBalls = balls.filter(b => {
+      const ballComp = b.getComponent('ball');
+      return ballComp?.isInactive();
+    });
+
+    // Don't check landing if there are INACTIVE balls (game not started)
+    if (inactiveBalls.length > 0) {
+      this.allBallsLanded = false;
+      return;
+    }
+
     const activeBalls = balls.filter(b => {
       const ballComp = b.getComponent('ball');
       return ballComp?.isActive() || ballComp?.isWaiting();
@@ -121,8 +138,10 @@ export class BallSystem extends System {
     if (activeBalls.length === 0 && balls.length > 0) {
       if (!this.allBallsLanded) {
         this.allBallsLanded = true;
+        // Emit landing positions for next turn
         this.eventBus.emit('balls:all_landed', {
           landingX: this.landingX,
+          landingY: BALL.WAITING_Y, // Next turn starts at waiting position (688)
         });
       }
     } else {
@@ -144,11 +163,12 @@ export class BallSystem extends System {
       const ballComp = ball.getComponent('ball');
       if (!ballComp) continue;
 
-      ballComp.setState(BALL_STATE.WAITING);
+      // Store launch parameters for delayed spawning
+      ballComp.setLaunchParams(angle, BALL.INITIAL_SPEED);
       ballComp.setLaunchTime(startTime);
+      ballComp.setState(BALL_STATE.WAITING);
 
-      // Launch immediately (BallFactory handles angle clamping)
-      BallFactory.launch(ball, angle, BALL.INITIAL_SPEED);
+      // Don't launch immediately - processBall will launch when ready
     }
   }
 
