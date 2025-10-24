@@ -23,7 +23,7 @@ export const BALL = {
   VISUAL_RADIUS_WAITING: 10,  // Smaller when waiting/landed (legacy behavior)
   VISUAL_RADIUS_ACTIVE: 11,   // Full size when active
 
-  INITIAL_SPEED: 7.0,  // 2x speed (original: 3.5)
+  INITIAL_SPEED: 3.5,  // Legacy speed (matches original game)
   LAUNCH_DELAY_FRAMES: 6,
   COLOR: '#fdd700',
   MIN_LAUNCH_ANGLE: 0.17, // radians (~10°)
