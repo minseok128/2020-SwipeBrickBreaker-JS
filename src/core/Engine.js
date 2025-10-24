@@ -12,6 +12,7 @@ import { InputManager } from '@input/InputManager.js';
 import { WorldManager } from '@physics/WorldManager.js';
 import { StateManager } from '@/state/StateManager.js';
 import { MenuState } from '@/state/states/MenuState.js';
+import { PerformanceMonitor } from '@utils/PerformanceMonitor.js';
 
 // Import systems
 import { PhysicsSystem } from '@systems/PhysicsSystem.js';
@@ -40,6 +41,9 @@ export class Engine {
 
     // Game loop
     this.gameLoop = new GameLoop(this.update.bind(this), this.render.bind(this));
+
+    // Performance monitoring
+    this.performanceMonitor = new PerformanceMonitor();
 
     // State
     this.running = false;
@@ -129,6 +133,10 @@ export class Engine {
 
     // Cleanup dead entities
     this.entityManager.cleanup();
+
+    // Update performance metrics
+    this.performanceMonitor.update();
+    this.performanceMonitor.setEntityCount(entities.length);
   }
 
   /**
@@ -145,10 +153,27 @@ export class Engine {
     // Render state (includes entity rendering via RenderSystem)
     this.stateManager.render(this.renderer, alpha);
 
-    // Show FPS for debugging
-    this.renderer.drawText(`FPS: ${this.gameLoop.getFPS()}`, 550, 20, {
+    // Show performance metrics for debugging
+    const metrics = this.performanceMonitor.getMetrics();
+    const memory = this.performanceMonitor.getMemoryUsage();
+
+    this.renderer.drawText(`FPS: ${this.performanceMonitor.getFPS()}`, 550, 20, {
       font: '15px BM YEONSUNG OTF',
       color: '#ffffff',
+      align: 'right',
+    });
+
+    if (memory) {
+      this.renderer.drawText(`Mem: ${memory.usedMB}MB`, 550, 40, {
+        font: '12px BM YEONSUNG OTF',
+        color: '#aaaaaa',
+        align: 'right',
+      });
+    }
+
+    this.renderer.drawText(`Entities: ${metrics.entityCount}`, 550, 60, {
+      font: '12px BM YEONSUNG OTF',
+      color: '#aaaaaa',
       align: 'right',
     });
   }
