@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Swipe Brick Breaker - Classic arcade game refactored with modern architecture" />
+    <title>Swipe Brick Breaker 2.0</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #161e38;
+        font-family: 'BM YEONSUNG OTF', sans-serif;
+        overflow: hidden;
+      }
+
+      #game-container {
+        position: relative;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      }
+
+      #game-canvas {
+        display: block;
+        background-color: #161e38;
+        border: 2px solid #fdd700;
+      }
+
+      @font-face {
+        font-family: 'BM YEONSUNG OTF';
+        src: url('./assets/fonts/BMYEONSUNG_otf.otf') format('opentype');
+      }
+    </style>
+  </head>
+  <body>
+    <div id="game-container">
+      <canvas id="game-canvas" width="600" height="700"></canvas>
+    </div>
+    <script type="module" src="/src/index.js"></script>
+  </body>
+</html>
