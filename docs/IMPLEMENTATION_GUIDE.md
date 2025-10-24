@@ -34,6 +34,12 @@ npm --version   # v9.0.0 이상
 
 ### 프로젝트 초기화
 
+> **📁 레거시 코드 참조**:
+> 이 가이드는 새로운 리팩토링 프로젝트를 위한 것입니다.
+> 2020년 원본 프로젝트는 `/legacy` 디렉토리에 보관되어 있습니다.
+>
+> 기능 분석 및 테스트 시 레거시 코드(`legacy/asset/app.js`)를 참조하세요.
+
 ```bash
 # 프로젝트 디렉토리 생성
 mkdir swipe-brick-breaker-refactored

@@ -56,13 +56,18 @@
 
 ### 코드베이스 개요
 
+> **📁 레거시 코드 보관**: 2020년 원본 프로젝트는 `/legacy` 디렉토리로 이동되었습니다.
+> 리팩토링 문서는 `/docs` 디렉토리에 위치합니다.
+
+**레거시 코드 구조** (`/legacy`):
 ```
-프로젝트: 2020-SwipeBrickBreaker-JS
+legacy/
 ├── index.html          (23 lines)
 ├── asset/
 │   ├── app.js          (974 lines) ⚠️ 모든 로직
 │   ├── style.css       (37 lines)
 │   └── [이미지/폰트]
+├── readme/             (스크린샷)
 └── README.md
 ```
 

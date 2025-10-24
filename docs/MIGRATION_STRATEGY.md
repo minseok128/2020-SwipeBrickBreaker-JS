@@ -66,12 +66,16 @@ npm install planck-js  # Box2D 물리 엔진
 npx playwright install --with-deps
 ```
 
-##### 2. 원본 코드 백업
-```bash
-export PROJECT_ROOT="/absolute/path/to/2020-SwipeBrickBreaker-JS"
-mkdir -p old
-cp -r "$PROJECT_ROOT"/* ./old/
-```
+##### 2. 원본 코드 참조
+> **📁 레거시 코드**: 2020년 원본 프로젝트는 이미 `/legacy` 디렉토리로 이동되어 있습니다.
+>
+> 레거시 코드를 참조하여 기능 분석 및 비교 테스트를 수행하세요.
+> ```
+> legacy/
+> ├── asset/app.js      # 모든 게임 로직 (974 lines)
+> ├── index.html
+> └── README.md
+> ```
 
 ##### 3. 프로젝트 구조 생성
 ```bash

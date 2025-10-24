@@ -309,6 +309,20 @@ physicsSystem.update([ball], deltaTime);  // 위치 업데이트
 **개발자**: SAUP819
 **버전**: 0.1.4
 
+> **📁 레거시 코드 위치**: 기존 2020년 원본 프로젝트는 `/legacy` 디렉토리로 이동되었습니다.
+>
+> 레거시 코드 구조:
+> ```
+> legacy/
+> ├── asset/
+> │   ├── app.js          (974 lines - 원본 게임 로직)
+> │   ├── style.css
+> │   └── [이미지/폰트]
+> ├── readme/             (스크린샷 및 자료)
+> ├── index.html
+> └── README.md
+> ```
+
 자세한 스토리는 [메인 README.md](../README.md)를 참조하세요.
 
 ---
